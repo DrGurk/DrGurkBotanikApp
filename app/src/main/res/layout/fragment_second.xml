@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SecondFragment">
+
+    <TextView
+        android:id="@+id/textview_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/button_second"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="132dp"
+        android:text="@string/previous"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="160dp" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="168dp"
+        android:layout_height="49dp"
+        android:text="Button"
+        tools:layout_editor_absoluteX="121dp"
+        tools:layout_editor_absoluteY="116dp" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="163dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="176dp"
+        android:text="Button"
+        app:layout_constraintTop_toBottomOf="@+id/button2"
+        tools:layout_editor_absoluteX="124dp" />
+
+    <EditText
+        android:id="@+id/editTextTextMultiLine"
+        android:layout_width="208dp"
+        android:layout_height="124dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="Ein Mix aus verschiedenen Fragen"
+        tools:layout_editor_absoluteX="95dp"
+        tools:layout_editor_absoluteY="184dp" />
+
+    <EditText
+        android:id="@+id/editTextTextMultiLine2"
+        android:layout_width="205dp"
+        android:layout_height="131dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="Nur 4 Sekunden pro Frage. Keine Multi-Antwort Fragen."
+        tools:layout_editor_absoluteX="91dp"
+        tools:layout_editor_absoluteY="404dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
