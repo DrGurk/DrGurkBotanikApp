@@ -1,11 +1,15 @@
 package com.example.botanikapp;
 
 import android.app.Activity;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.view.KeyEvent;
 import android.graphics.Color;
@@ -15,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -35,22 +40,31 @@ public class FourChoiceQuizActivity extends Activity {
 
     int currentQuestion;
 
-    TextView btn1;
-    TextView btn2;
-    TextView btn3;
-    TextView btn4;
+    Button btn1;
+    Button btn2;
+    Button btn3;
+    Button btn4;
+    ImageView imageView;
 
     TextView timerTV;
     TextView scoreTV;
 
+    ProgressBar progressBar;
+
     //default button color
     Drawable d;
+    Color bg_col;
+    ColorDrawable buttonColor;
+    int buttonColorId;
 
     int playerScore = 0;
 
     CountDownTimer timer;
     int timerCount = 0;
     int timerTime = 0;
+    int timerFull = 0;
+
+    int timerDelta = 1000;
 
     int difficulty;
 
@@ -58,18 +72,17 @@ public class FourChoiceQuizActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_normal);
-        getActionBar().hide();
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            difficulty = extras.getInt("EXTRA_DIFFICULTY");
-        }
+        //Bundle extras = getIntent().getExtras();
 
-        mainIV = (ImageView) findViewById(R.id.main_image_view);
-        btn1 = (TextView) findViewById(R.id.choice_button_1);
-        btn2 = (TextView) findViewById(R.id.choice_button_2);
-        btn3 = (TextView) findViewById(R.id.choice_button_3);
-        btn4 = (TextView) findViewById(R.id.choice_button_4);
+        //Toast.makeText(this, "Toasty", Toast.LENGTH_SHORT).show();
+        //mainIV = (ImageView) findViewById(R.id.main_image_view);
+        btn1 = (Button) findViewById(R.id.choice_button_1);
+        btn2 = (Button) findViewById(R.id.choice_button_2);
+        btn3 = (Button) findViewById(R.id.choice_button_3);
+        btn4 = (Button) findViewById(R.id.choice_button_4);
+
+        progressBar = (ProgressBar) findViewById(R.id.time_progress);
 
 
         timerTV = (TextView) findViewById(R.id.timer_text_view);
@@ -77,6 +90,8 @@ public class FourChoiceQuizActivity extends Activity {
 
         //Get the default background color
         d = btn1.getBackground();
+        //buttonColor = (ColorDrawable) btn1.getBackground();
+        //buttonColorId = buttonColor.getColor();
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,15 +123,13 @@ public class FourChoiceQuizActivity extends Activity {
         });
 
 
-
-        imagesShuffled = new ArrayList(HomeActivity.images);
-
         //Randomize the order of the images in the array
         long seed = System.nanoTime();
-        Collections.shuffle(imagesShuffled, new Random(seed));
 
 
-        timerTime = (3/difficulty) * 1000 * imagesShuffled.size();
+        timerTime = (3/1) * 10000;
+        timerFull = timerTime;
+        progressBar.setMax(timerFull);
 
         startQuiz();
 
@@ -138,7 +151,7 @@ public class FourChoiceQuizActivity extends Activity {
     protected void onResume() {
         super.onResume();
         timer.cancel();
-        startTimer(timerTime - (timerCount*1000));
+        startTimer(timerTime - (timerCount*timerDelta));
     }
 
     public void startQuiz(){
@@ -146,22 +159,24 @@ public class FourChoiceQuizActivity extends Activity {
         //Get All the file names in an array
         currentQuestion = 0;
         createQuestion();
-        startTimer(timerTime);
+        startTimer(timerTime * 100);
 
     }
 
 
     public void  startTimer(int time){
-        timer = new CountDownTimer(time, 1000) {
+        timer = new CountDownTimer(time, timerDelta) {
 
             public void onTick(long millisUntilFinished) {
-                timerTV.setText(getString(R.string.timer_text) +" "+ millisUntilFinished / 1000);
+                timerTV.setText(getString(R.string.timer_text) +" "+ millisUntilFinished / timerDelta);
+                progressBar.setProgress(timerTime - (timerCount*timerDelta));
                 timerCount++;
             }
 
             public void onFinish() {
                 timerTV.setText("done!");
-                resultsPage();
+                progressBar.setProgress(0);
+//                resultsPage();
             }
         }.start();
     }
@@ -178,11 +193,29 @@ public class FourChoiceQuizActivity extends Activity {
 
     private void createQuestion(){
 
+
         int randomFileIndex;
+        /*
+        btn1.setBackgroundColor(buttonColorId);
+        btn2.setBackgroundColor(buttonColorId);
+        btn3.setBackgroundColor(buttonColorId);
+        btn4.setBackgroundColor(buttonColorId);
+
+         */
+
+        //int drawableResourceId = this.getResources().getIdentifier("eiche.jpg", "drawable", this.getPackageName());
+        imageView = (ImageView) findViewById(R.id.main_image_view);
+        imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.eiche));
+        btn1.setBackground(d);
+        btn2.setBackground(d);
+        btn3.setBackground(d);
+        btn4.setBackground(d);
 
 
         //picks a random number for the answer
         correctAnswer = 0 + (int)(Math.random() * ((3 - 0) + 1));
+
+        //correctAnswer = ++correctAnswer % 4;
 
         //create an array of answers from file names
         /*
@@ -228,33 +261,42 @@ public class FourChoiceQuizActivity extends Activity {
         btn3.setText(answers.get(2).substring(2));
         btn4.setText(answers.get(3).substring(2));
          */
+        //Toast.makeText(this, "" + correctAnswer, Toast.LENGTH_SHORT).show();
         switch(correctAnswer){
             case 0:
+                //Toast.makeText(this, "Bing", Toast.LENGTH_SHORT).show();
                 btn1.setText("Eiche");
                 btn2.setText("Buche");
                 btn3.setText("Erle");
                 btn4.setText("Birke");
+                break;
             case 1:
+                //Toast.makeText(this, "Bung", Toast.LENGTH_SHORT).show();
                 btn2.setText("Eiche");
                 btn1.setText("Buche");
                 btn4.setText("Erle");
                 btn3.setText("Birke");
+                break;
             case 2:
+                //Toast.makeText(this, "Bang", Toast.LENGTH_SHORT).show();
                 btn3.setText("Eiche");
                 btn4.setText("Buche");
                 btn1.setText("Erle");
                 btn2.setText("Birke");
+                break;
             case 3:
+                //Toast.makeText(this, "Beng", Toast.LENGTH_SHORT).show();
                 btn4.setText("Eiche");
                 btn3.setText("Buche");
                 btn2.setText("Erle");
                 btn1.setText("Birke");
+                break;
+            default:
+                btn1.setText("Something");
+                btn2.setText("Went");
+                btn3.setText("Wrong");
+                btn4.setText("Whoops");
         }
-
-        btn1.setBackgroundDrawable(d);
-        btn2.setBackgroundDrawable(d);
-        btn3.setBackgroundDrawable(d);
-        btn4.setBackgroundDrawable(d);
     }
 
     private void submitAnswer(int answer){
@@ -264,7 +306,8 @@ public class FourChoiceQuizActivity extends Activity {
             currentQuestion++;
             playerScore++;
 
-            if (currentQuestion == imagesShuffled.size()){
+
+            if (currentQuestion == 10){
                 //Show the dialog
                 resultsPage();
 
@@ -287,16 +330,11 @@ public class FourChoiceQuizActivity extends Activity {
 
                 final int finalAnswer = answer;
 
+                //Toast.makeText(this, "Richtig " + playerScore, Toast.LENGTH_SHORT).show();
                 // SLEEP 2 SECONDS HERE ...
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-//                        if (currentQuestion%2 == 0){
-//                            displayInterstitial();
-//
-//                        }
-
-
                         createQuestion();
                     }
                 }, 500);
@@ -320,6 +358,13 @@ public class FourChoiceQuizActivity extends Activity {
                 default:
                     break;
             }
+            //Toast.makeText(this, "Falsch " + playerScore, Toast.LENGTH_SHORT).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    createQuestion();
+                }
+            }, 500);
 
         }
 
