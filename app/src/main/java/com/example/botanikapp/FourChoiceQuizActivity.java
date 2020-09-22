@@ -21,12 +21,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.io.InputStream;
+import java.util.Scanner;
+import java.util.Vector;
+
+import com.example.botanikapp.Utility;
 
 public class FourChoiceQuizActivity extends Activity {
 
@@ -72,6 +78,8 @@ public class FourChoiceQuizActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_normal);
+        Vector<String> tagdata = readFile("primary_tags");
+        QuizMaster.initialize(tagdata, getApplicationContext());
 
         //Bundle extras = getIntent().getExtras();
 
@@ -205,13 +213,25 @@ public class FourChoiceQuizActivity extends Activity {
 
         //int drawableResourceId = this.getResources().getIdentifier("eiche.jpg", "drawable", this.getPackageName());
         imageView = (ImageView) findViewById(R.id.main_image_view);
-        imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.eiche));
+        //imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.eiche));
+        //final String str = "thymian_" + rnd.nextInt(2);
+        Random rnd = new Random();
+        String plant = "baldrian";
+        int noImages = Utility.getNumImagesForPlant(plant, "drawable", getApplicationContext());
+        final String str = plant + "_" + rnd.nextInt(noImages);
+        imageView.setImageDrawable
+                (
+                        getResources().getDrawable(Utility.getResourceID(str, "drawable",
+                                getApplicationContext()))
+                );
         btn1.setBackground(d);
         btn2.setBackground(d);
         btn3.setBackground(d);
         btn4.setBackground(d);
 
 
+        //Toast.makeText(this, "" + Utility.getAppDirectory(this), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + QuizMaster.plantInfos.elementAt(0).numImages, Toast.LENGTH_SHORT).show();
         //picks a random number for the answer
         correctAnswer = 0 + (int)(Math.random() * ((3 - 0) + 1));
 
@@ -414,5 +434,22 @@ public class FourChoiceQuizActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    Vector<String> readFile(String dir) {//TODO: change to inputfile stream if it doesnt work
+        Vector<String> out = new Vector<String>();
+        try {
+            InputStream inputStream = getResources().openRawResource(R.raw.primary_tags);
+            Scanner myReader = new Scanner(inputStream);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                out.add(data);
+            }
+            myReader.close();
+        } catch (Exception e) {
+            System.out.println("No file could be read.");
+            e.printStackTrace();
+        }
+        return out;
     }
 }
