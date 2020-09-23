@@ -78,8 +78,9 @@ public class FourChoiceQuizActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.quiz_normal);
-        Vector<String> tagdata = readFile("primary_tags");
-        QuizMaster.initialize(tagdata, getApplicationContext());
+        Vector<String> primaryTags = readFile("primary_tags");
+        Vector<Vector<String>> tags = readTags();
+        QuizMaster.initialize(tags, primaryTags, getApplicationContext());
 
         //Bundle extras = getIntent().getExtras();
 
@@ -216,7 +217,9 @@ public class FourChoiceQuizActivity extends Activity {
         //imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.eiche));
         //final String str = "thymian_" + rnd.nextInt(2);
         Random rnd = new Random();
-        String plant = "baldrian";
+        FourChoiceQuestion question = QuizMaster.getFourChoiceQuestion(getApplicationContext());
+        correctAnswer = question.correct;
+        String plant = question.answers.elementAt(correctAnswer).toLowerCase();
         int noImages = Utility.getNumImagesForPlant(plant, "drawable", getApplicationContext());
         final String str = plant + "_" + rnd.nextInt(noImages);
         imageView.setImageDrawable
@@ -231,9 +234,12 @@ public class FourChoiceQuizActivity extends Activity {
 
 
         //Toast.makeText(this, "" + Utility.getAppDirectory(this), Toast.LENGTH_SHORT).show();
-        Toast.makeText(this, "" + QuizMaster.plantInfos.elementAt(0).numImages, Toast.LENGTH_SHORT).show();
-        //picks a random number for the answer
-        correctAnswer = 0 + (int)(Math.random() * ((3 - 0) + 1));
+        //Toast.makeText(this, "" + QuizMaster.plantInfos.elementAt(0).numImages, Toast.LENGTH_SHORT).show();
+
+        btn1.setText(question.answers.elementAt(0));
+        btn2.setText(question.answers.elementAt(1));
+        btn3.setText(question.answers.elementAt(2));
+        btn4.setText(question.answers.elementAt(3));
 
         //correctAnswer = ++correctAnswer % 4;
 
@@ -282,6 +288,8 @@ public class FourChoiceQuizActivity extends Activity {
         btn4.setText(answers.get(3).substring(2));
          */
         //Toast.makeText(this, "" + correctAnswer, Toast.LENGTH_SHORT).show();
+
+        /*
         switch(correctAnswer){
             case 0:
                 //Toast.makeText(this, "Bing", Toast.LENGTH_SHORT).show();
@@ -317,6 +325,8 @@ public class FourChoiceQuizActivity extends Activity {
                 btn3.setText("Wrong");
                 btn4.setText("Whoops");
         }
+
+         */
     }
 
     private void submitAnswer(int answer){
@@ -444,6 +454,33 @@ public class FourChoiceQuizActivity extends Activity {
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 out.add(data);
+            }
+            myReader.close();
+        } catch (Exception e) {
+            System.out.println("No file could be read.");
+            e.printStackTrace();
+        }
+        return out;
+    }
+
+    Vector<Vector<String>> readTags(){
+        Vector<Vector<String>> out = new Vector<Vector<String>>();
+        try {
+            InputStream inputStream = getResources().openRawResource(R.raw.tags);
+            Scanner myReader = new Scanner(inputStream);
+            while (myReader.hasNextLine()) {
+                String data = myReader.nextLine();
+                out.add(new Vector<String>());
+                out.lastElement().add(data);
+                String file = "tag_" + data.toLowerCase();
+                InputStream innerInputStream = getResources().openRawResource(Utility.getResourceID(file, "raw",
+                        getApplicationContext()));
+                Scanner innerReader = new Scanner(innerInputStream);
+                while (innerReader.hasNextLine()) {
+                    String innerData = innerReader.nextLine();
+                    out.lastElement().add(innerData);
+                }
+                innerReader.close();
             }
             myReader.close();
         } catch (Exception e) {

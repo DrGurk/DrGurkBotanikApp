@@ -1,10 +1,13 @@
 package com.example.botanikapp;
 
 import java.util.Random;
+import java.util.Vector;
 
 public class FourChoiceQuestion implements Question {
     String imagePath;
-    String[] answers = new String[4];
+    Vector<String> answers = new Vector<String>();
+    int correct;
+
     public void createQuestion(String dir, String[] stuff, Tag tag){
         Random rand = new Random();
         String[] textFilter = {"txt"};
