@@ -22,24 +22,31 @@
         android:layout_marginBottom="132dp"
         android:text="@string/previous"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="160dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2"
+        app:layout_constraintVertical_bias="0.417" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="168dp"
         android:layout_height="49dp"
         android:text="Button"
-        tools:layout_editor_absoluteX="121dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="116dp" />
 
     <Button
         android:id="@+id/button3"
         android:layout_width="163dp"
         android:layout_height="48dp"
-        android:layout_marginTop="176dp"
         android:text="Button"
-        app:layout_constraintTop_toBottomOf="@+id/button2"
-        tools:layout_editor_absoluteX="124dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
 
     <EditText
         android:id="@+id/editTextTextMultiLine"
@@ -49,17 +56,22 @@
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:text="Ein Mix aus verschiedenen Fragen"
-        tools:layout_editor_absoluteX="95dp"
-        tools:layout_editor_absoluteY="184dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
     <EditText
         android:id="@+id/editTextTextMultiLine2"
         android:layout_width="205dp"
         android:layout_height="131dp"
+        android:layout_marginTop="4dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
         android:text="Nur 4 Sekunden pro Frage. Keine Multi-Antwort Fragen."
-        tools:layout_editor_absoluteX="91dp"
-        tools:layout_editor_absoluteY="404dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

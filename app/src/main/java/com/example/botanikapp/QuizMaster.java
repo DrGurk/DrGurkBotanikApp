@@ -15,11 +15,11 @@ public class QuizMaster {
     static Vector<Tag> tags = new Vector<Tag>();
     public static Vector<PlantInfo> plantInfos;
 
-    public static void initialize(Vector<Vector<String>> tags, Vector<String> tagdata, final Context ctx){
+    public static void initialize(final Context ctx){
         initialized = true;
 
-        insertTags(tags);
-        plantInfos = PlantInfo.getPlantInfos(tagdata, ctx);
+        insertTags(Utility.readTags(ctx));
+        plantInfos = PlantInfo.getPlantInfos(Utility.readFile("primary_tags", "raw",ctx), ctx);
     }
 
     private static void insertTags(Vector<Vector<String>> in){
@@ -70,5 +70,18 @@ public class QuizMaster {
         Collections.shuffle(out.answers);
         out.correct = out.answers.indexOf(correct);
         return out;
+    }
+
+    public static TriviaQuestion getTriviaQuestion(final Context ctx){
+
+        String correct;
+        String strtag;
+        int rng = -1;
+        rng = rand.nextInt(plantInfos.size());
+        PlantInfo plantInfo = plantInfos.elementAt(rng);
+        rng = rand.nextInt(plantInfo.triviaQuestions.size());
+        TriviaQuestionData triviaQuestionData = plantInfo.triviaQuestions.elementAt(rng);
+
+        return new TriviaQuestion(triviaQuestionData);
     }
 }

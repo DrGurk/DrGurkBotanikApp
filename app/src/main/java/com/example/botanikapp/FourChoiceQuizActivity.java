@@ -80,7 +80,7 @@ public class FourChoiceQuizActivity extends Activity {
         setContentView(R.layout.quiz_normal);
         Vector<String> primaryTags = readFile("primary_tags");
         Vector<Vector<String>> tags = readTags();
-        QuizMaster.initialize(tags, primaryTags, getApplicationContext());
+        //QuizMaster.initialize(tags, primaryTags, getApplicationContext());
 
         //Bundle extras = getIntent().getExtras();
 
