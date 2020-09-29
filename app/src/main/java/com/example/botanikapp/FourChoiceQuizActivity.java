@@ -1,7 +1,6 @@
 package com.example.botanikapp;
 
 import android.app.Activity;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -21,18 +20,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Collections;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.Vector;
-
-import com.example.botanikapp.Utility;
 
 public class FourChoiceQuizActivity extends Activity {
 
@@ -46,11 +38,21 @@ public class FourChoiceQuizActivity extends Activity {
 
     int currentQuestion;
 
+    boolean[] arrAnswers = new boolean[8];
     Button btn1;
     Button btn2;
     Button btn3;
     Button btn4;
+    //Extra Buttons for other quizzes 
+    Button btn5;
+    Button btn6;
+    Button btn7;
+    Button btn8;
+    Button confirm;
     ImageView imageView;
+
+    MultiAnswerQuestion multiAnswerQuestion;
+    TriviaQuestion triviaQuestion;
 
     TextView timerTV;
     TextView scoreTV;
@@ -77,15 +79,20 @@ public class FourChoiceQuizActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //initFourChoice();
+        initMATrivia();
+        timerTime = (3/1) * 7000;
+        timerFull = timerTime;
+        progressBar.setMax(timerFull);
+
+        startQuiz2();
+
+    }
+
+
+    private void initFourChoice(){
         setContentView(R.layout.quiz_normal);
-        Vector<String> primaryTags = readFile("primary_tags");
-        Vector<Vector<String>> tags = readTags();
-        //QuizMaster.initialize(tags, primaryTags, getApplicationContext());
 
-        //Bundle extras = getIntent().getExtras();
-
-        //Toast.makeText(this, "Toasty", Toast.LENGTH_SHORT).show();
-        //mainIV = (ImageView) findViewById(R.id.main_image_view);
         btn1 = (Button) findViewById(R.id.choice_button_1);
         btn2 = (Button) findViewById(R.id.choice_button_2);
         btn3 = (Button) findViewById(R.id.choice_button_3);
@@ -93,14 +100,8 @@ public class FourChoiceQuizActivity extends Activity {
 
         progressBar = (ProgressBar) findViewById(R.id.time_progress);
 
+        commonSetup();
 
-        timerTV = (TextView) findViewById(R.id.timer_text_view);
-        //scoreTV = (TextView) findViewById(R.id.score_text_view);
-
-        //Get the default background color
-        d = btn1.getBackground();
-        //buttonColor = (ColorDrawable) btn1.getBackground();
-        //buttonColorId = buttonColor.getColor();
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +124,6 @@ public class FourChoiceQuizActivity extends Activity {
             }
         });
 
-
         btn4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,20 +131,188 @@ public class FourChoiceQuizActivity extends Activity {
             }
         });
 
-
-        //Randomize the order of the images in the array
-        long seed = System.nanoTime();
-
-
-        timerTime = (3/1) * 10000;
-        timerFull = timerTime;
-        progressBar.setMax(timerFull);
-
-        startQuiz();
-
     }
 
+    private void initMATrivia(){
+        setContentView(R.layout.quiz_multi2);
+        btn1 = (Button) findViewById(R.id.button11);
+        btn2 = (Button) findViewById(R.id.button12);
+        btn3 = (Button) findViewById(R.id.button21);
+        btn4 = (Button) findViewById(R.id.button22);
+        btn5 = (Button) findViewById(R.id.button31);
+        btn6 = (Button) findViewById(R.id.button32);
+        btn7 = (Button) findViewById(R.id.button41);
+        btn8 = (Button) findViewById(R.id.button42);
+        confirm = (Button) findViewById(R.id.button9);
 
+        progressBar = (ProgressBar) findViewById(R.id.time_progress);
+        
+        commonSetup();
+
+        clearButtonsMulti();
+        
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(0);
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(1);
+            }
+        });
+
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(2);
+            }
+        });
+
+        btn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(3);
+            }
+        });
+
+        btn5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(4);
+            }
+        });
+
+        btn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(5);
+            }
+        });
+
+        btn7.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(6);
+            }
+        });
+
+        btn8.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                flip(7);
+            }
+        });
+
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitArray();
+            }
+        });
+        
+        
+    }
+
+    private void clearButtonsMulti(){
+        btn1.setBackgroundColor(Color.TRANSPARENT);
+        btn2.setBackgroundColor(Color.TRANSPARENT);
+        btn3.setBackgroundColor(Color.TRANSPARENT);
+        btn4.setBackgroundColor(Color.TRANSPARENT);
+        btn5.setBackgroundColor(Color.TRANSPARENT);
+        btn6.setBackgroundColor(Color.TRANSPARENT);
+        btn7.setBackgroundColor(Color.TRANSPARENT);
+        btn8.setBackgroundColor(Color.TRANSPARENT);
+        btn1.setBackground(d);
+        btn2.setBackground(d);
+        btn3.setBackground(d);
+        btn4.setBackground(d);
+        btn5.setBackground(d);
+        btn6.setBackground(d);
+        btn7.setBackground(d);
+        btn8.setBackground(d);
+    }
+    private void submitArray(){
+        boolean checkResult = multiAnswerQuestion.check(arrAnswers);
+        if(checkResult){
+            Toast.makeText(this, "Richtig " + playerScore, Toast.LENGTH_SHORT).show();
+        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+                public void run() {
+                    createMultiTriviaQuestion();
+                }
+            }, 500);
+
+    }
+    private void flip(int i){
+        arrAnswers[i] = !arrAnswers[i];
+        updateButtonColors();
+    }
+    private void updateButtonColors(){
+        if(arrAnswers[0]){
+            btn1.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn1.setBackground(d);
+            Toast.makeText(this, "Toasty ", Toast.LENGTH_SHORT).show();
+        }
+        if(arrAnswers[1]){
+            btn2.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn2.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[2]){
+            btn3.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn3.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[3]){
+            btn4.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn4.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[4]){
+            btn5.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn5.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[5]){
+            btn6.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn6.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[6]){
+            btn7.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn7.setBackgroundColor(Color.TRANSPARENT);
+        }
+        if(arrAnswers[7]){
+            btn8.setBackgroundColor(Color.BLUE);
+        }
+        else{
+            btn8.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+    }
+    private void commonSetup(){
+
+
+        timerTV = (TextView) findViewById(R.id.timer_text_view);
+
+        //Get the default background color
+        d = btn1.getBackground();
+        
+    }
 
 
 
@@ -167,23 +335,37 @@ public class FourChoiceQuizActivity extends Activity {
 
         //Get All the file names in an array
         currentQuestion = 0;
-        createQuestion();
+        createFourChoiceQuestion();
+        startTimer(timerTime * 100);
+
+    }
+    public void startQuiz2(){
+
+        //Get All the file names in an array
+        currentQuestion = 0;
+
+        createMultiTriviaQuestion();
         startTimer(timerTime * 100);
 
     }
 
 
     public void  startTimer(int time){
+        if(timer != null){
+            timer.cancel();
+        }
+        timerCount = 0;
         timer = new CountDownTimer(time, timerDelta) {
 
             public void onTick(long millisUntilFinished) {
-                timerTV.setText(getString(R.string.timer_text) +" "+ millisUntilFinished / timerDelta);
-                progressBar.setProgress(timerTime - (timerCount*timerDelta));
+                //timerTV.setText(getString(R.string.timer_text) +" "+ millisUntilFinished / timerDelta);
+                //progressBar.setProgress(timerTime - (timerCount*timerDelta));
+                progressBar.setProgress((int) millisUntilFinished);
                 timerCount++;
             }
 
             public void onFinish() {
-                timerTV.setText("done!");
+                //timerTV.setText("done!");
                 progressBar.setProgress(0);
 //                resultsPage();
             }
@@ -200,22 +382,9 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
 
-    private void createQuestion(){
+    private void createFourChoiceQuestion(){
 
-
-        int randomFileIndex;
-        /*
-        btn1.setBackgroundColor(buttonColorId);
-        btn2.setBackgroundColor(buttonColorId);
-        btn3.setBackgroundColor(buttonColorId);
-        btn4.setBackgroundColor(buttonColorId);
-
-         */
-
-        //int drawableResourceId = this.getResources().getIdentifier("eiche.jpg", "drawable", this.getPackageName());
         imageView = (ImageView) findViewById(R.id.main_image_view);
-        //imageView.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.drawable.eiche));
-        //final String str = "thymian_" + rnd.nextInt(2);
         Random rnd = new Random();
         FourChoiceQuestion question = QuizMaster.getFourChoiceQuestion(getApplicationContext());
         correctAnswer = question.correct;
@@ -232,101 +401,46 @@ public class FourChoiceQuizActivity extends Activity {
         btn3.setBackground(d);
         btn4.setBackground(d);
 
-
-        //Toast.makeText(this, "" + Utility.getAppDirectory(this), Toast.LENGTH_SHORT).show();
-        //Toast.makeText(this, "" + QuizMaster.plantInfos.elementAt(0).numImages, Toast.LENGTH_SHORT).show();
-
+        while(question.answers.size() < 4){
+            question.answers.add("Error");
+        }
         btn1.setText(question.answers.elementAt(0));
         btn2.setText(question.answers.elementAt(1));
         btn3.setText(question.answers.elementAt(2));
         btn4.setText(question.answers.elementAt(3));
 
-        //correctAnswer = ++correctAnswer % 4;
+        startTimer(timerTime);
 
-        //create an array of answers from file names
-        /*
-        ArrayList answers = new ArrayList();
-        List categoryList = new ArrayList();
+    }
 
-        for (int subArrayFlag = 0; subArrayFlag < imagesShuffled.size();subArrayFlag++){
-            if(imagesShuffled.get(currentQuestion).getName().substring(0,1)
-                    .equalsIgnoreCase(imagesShuffled.get(subArrayFlag).getName().substring(0, 1))){
-                categoryList.add(subArrayFlag);
+    private void createTriviaQuestion(){
 
-            }
+    }
+
+    private void createMultiTriviaQuestion(){
+        clearButtonsMulti();
+        for(int i = 0; i < arrAnswers.length ; i++){
+            arrAnswers[i] = false;
         }
 
-        //get 3 random answers and add it to the array
-        for (int i = 0 ; i < 4 ;i++ ){ if (i == correctAnswer){ answers.add(imagesShuffled.get(currentQuestion).getName()); }else { do { randomFileIndex = (int) (Math.random() * categoryList.size()); } while ( categoryList.get(randomFileIndex) == currentQuestion && categoryList.size() > 0 );
+        Random rnd = new Random();
+        multiAnswerQuestion = QuizMaster.getMultiAnswerQuestion(getApplicationContext());
 
-            answers.add(imagesShuffled.get(categoryList.get(randomFileIndex)).getName());
+        if(multiAnswerQuestion.data.size() > 7){
+            btn1.setText(multiAnswerQuestion.data.elementAt(0).str);
+            btn2.setText(multiAnswerQuestion.data.elementAt(1).str);
+            btn3.setText(multiAnswerQuestion.data.elementAt(2).str);
+            btn4.setText(multiAnswerQuestion.data.elementAt(3).str);
+            btn5.setText(multiAnswerQuestion.data.elementAt(4).str);
+            btn6.setText(multiAnswerQuestion.data.elementAt(5).str);
+            btn7.setText(multiAnswerQuestion.data.elementAt(6).str);
+            btn8.setText(multiAnswerQuestion.data.elementAt(7).str);
         }
 
-        }
+    }
 
+    private void createMultiImageQuestion(){
 
-        try
-        {
-            // get input stream
-            InputStream ims = getAssets().open(imagesShuffled.get(currentQuestion).getPath());
-            // load image as Drawable
-            Drawable d = Drawable.createFromStream(ims, null);
-            // set image to ImageView
-            mainIV.setImageDrawable(d);
-        }
-        catch(IOException ex)
-        {
-            return;
-        }
-
-         */
-
-        /*
-        btn1.setText(answers.get(0).substring(2));
-        btn2.setText(answers.get(1).substring(2));
-        btn3.setText(answers.get(2).substring(2));
-        btn4.setText(answers.get(3).substring(2));
-         */
-        //Toast.makeText(this, "" + correctAnswer, Toast.LENGTH_SHORT).show();
-
-        /*
-        switch(correctAnswer){
-            case 0:
-                //Toast.makeText(this, "Bing", Toast.LENGTH_SHORT).show();
-                btn1.setText("Eiche");
-                btn2.setText("Buche");
-                btn3.setText("Erle");
-                btn4.setText("Birke");
-                break;
-            case 1:
-                //Toast.makeText(this, "Bung", Toast.LENGTH_SHORT).show();
-                btn2.setText("Eiche");
-                btn1.setText("Buche");
-                btn4.setText("Erle");
-                btn3.setText("Birke");
-                break;
-            case 2:
-                //Toast.makeText(this, "Bang", Toast.LENGTH_SHORT).show();
-                btn3.setText("Eiche");
-                btn4.setText("Buche");
-                btn1.setText("Erle");
-                btn2.setText("Birke");
-                break;
-            case 3:
-                //Toast.makeText(this, "Beng", Toast.LENGTH_SHORT).show();
-                btn4.setText("Eiche");
-                btn3.setText("Buche");
-                btn2.setText("Erle");
-                btn1.setText("Birke");
-                break;
-            default:
-                btn1.setText("Something");
-                btn2.setText("Went");
-                btn3.setText("Wrong");
-                btn4.setText("Whoops");
-        }
-
-         */
     }
 
     private void submitAnswer(int answer){
@@ -365,7 +479,7 @@ public class FourChoiceQuizActivity extends Activity {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        createQuestion();
+                        createFourChoiceQuestion();
                     }
                 }, 500);
 
@@ -392,7 +506,7 @@ public class FourChoiceQuizActivity extends Activity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    createQuestion();
+                    createFourChoiceQuestion();
                 }
             }, 500);
 
@@ -408,6 +522,7 @@ public class FourChoiceQuizActivity extends Activity {
 
         String msg = "";
 
+        /*
         currentQuestion = 0;
 
         if(timerTime > timerCount){
@@ -422,7 +537,7 @@ public class FourChoiceQuizActivity extends Activity {
         resultIntent.putExtra("EXTRA_TIMER_TIME", timerTime);
 
         this.startActivity(resultIntent);
-
+*/
         finish();
     }
 
@@ -446,47 +561,4 @@ public class FourChoiceQuizActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    Vector<String> readFile(String dir) {//TODO: change to inputfile stream if it doesnt work
-        Vector<String> out = new Vector<String>();
-        try {
-            InputStream inputStream = getResources().openRawResource(R.raw.primary_tags);
-            Scanner myReader = new Scanner(inputStream);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                out.add(data);
-            }
-            myReader.close();
-        } catch (Exception e) {
-            System.out.println("No file could be read.");
-            e.printStackTrace();
-        }
-        return out;
-    }
-
-    Vector<Vector<String>> readTags(){
-        Vector<Vector<String>> out = new Vector<Vector<String>>();
-        try {
-            InputStream inputStream = getResources().openRawResource(R.raw.tags);
-            Scanner myReader = new Scanner(inputStream);
-            while (myReader.hasNextLine()) {
-                String data = myReader.nextLine();
-                out.add(new Vector<String>());
-                out.lastElement().add(data);
-                String file = "tag_" + data.toLowerCase();
-                InputStream innerInputStream = getResources().openRawResource(Utility.getResourceID(file, "raw",
-                        getApplicationContext()));
-                Scanner innerReader = new Scanner(innerInputStream);
-                while (innerReader.hasNextLine()) {
-                    String innerData = innerReader.nextLine();
-                    out.lastElement().add(innerData);
-                }
-                innerReader.close();
-            }
-            myReader.close();
-        } catch (Exception e) {
-            System.out.println("No file could be read.");
-            e.printStackTrace();
-        }
-        return out;
-    }
 }

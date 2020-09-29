@@ -40,6 +40,11 @@ public class PlantInfo {
             triviaQuestions.add(t);
         }
     }
+    public TriviaQuestion getRandomTriviaQuestion(){
+        int rng = Utility.rand.nextInt(triviaQuestions.size());
+        TriviaQuestion t = new TriviaQuestion(triviaQuestions.elementAt(rng));
+        return t;
+    }
     /*
     PlantInfo(String in){
         Vector<String> data = FileFinder.readFile("data/primary_tags");

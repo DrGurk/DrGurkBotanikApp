@@ -14,7 +14,23 @@ public class QuizMaster {
     static boolean initialized = false;
     static Vector<Tag> tags = new Vector<Tag>();
     public static Vector<PlantInfo> plantInfos;
+    static Vector<Integer> questionTypes = new Vector<Integer>();
 
+    public int score = 0;
+
+    public static void prepareFCQuestions(int numQuestions){
+        for(Integer i : questionTypes){
+            questionTypes.add(new Integer(0));
+        }
+    }
+
+    public static void prepareQuestions(Vector<Integer> in){
+        for(Integer i : in){
+            int tmp = i.intValue();
+            tmp = tmp < 0 ? 0: tmp > 3 ? 3 : tmp;
+            questionTypes.add(tmp);
+        }
+    }
     public static void initialize(final Context ctx){
         initialized = true;
 
@@ -67,6 +83,9 @@ public class QuizMaster {
 
             }
         }
+        while(out.answers.size() < 4){
+            out.answers.add("Error");
+        }
         Collections.shuffle(out.answers);
         out.correct = out.answers.indexOf(correct);
         return out;
@@ -83,5 +102,61 @@ public class QuizMaster {
         TriviaQuestionData triviaQuestionData = plantInfo.triviaQuestions.elementAt(rng);
 
         return new TriviaQuestion(triviaQuestionData);
+    }
+
+    public static MultiAnswerQuestion getMultiAnswerQuestion(final Context ctx){
+        MultiAnswerQuestion out = new MultiAnswerQuestion();
+        int numTrueAnswers = rand.nextInt(1) + 1;
+        int rng = rand.nextInt(QuizMaster.tags.size());
+
+        Vector<Integer> added = new Vector<Integer>();
+        Tag tag = tags.elementAt(rng);
+        Vector<MultiAnswerData> dataVector = new Vector<MultiAnswerData>();
+        int timeout = 0;
+        for(int i = 0; i < numTrueAnswers; i++){
+            rng = rand.nextInt(tag.holders.size());
+            if(!added.contains(rng)) {
+                added.add(rng);
+                MultiAnswerData d = new MultiAnswerData(tag.holders.elementAt(rng), true);
+                dataVector.add(d);
+            } else{
+                i--;
+                if(timeout++ > 100){
+                    for(int j = dataVector.size(); j < 8; j++){
+                        MultiAnswerData to = new MultiAnswerData("Timeout", true);
+                        dataVector.add(to);
+                    }
+                    break;
+                }
+
+            }
+        }
+
+        int numFalseAnswers = 8 - numTrueAnswers;
+        timeout = 0;
+        for(int i = 0; i < numFalseAnswers; i++){
+            rng = rand.nextInt(QuizMaster.plantInfos.size());
+            MultiAnswerData d = new MultiAnswerData(QuizMaster.plantInfos.elementAt(rng).name, false);
+            if(!dataVector.contains(d) && !tag.holders.contains(d.str)){
+                dataVector.add(d);
+            } else{
+                i--;
+                if(timeout++ > 100){
+                    for(int j = dataVector.size(); j < 8; j++){
+                        MultiAnswerData to = new MultiAnswerData("Timeout", true);
+                        dataVector.add(to);
+                    }
+                    break;
+                }
+            }
+        }
+
+        out.data = dataVector;
+        out.question = "Tag Question";
+        return out;
+
+    }
+    private static void processTimeout(){
+
     }
 }
