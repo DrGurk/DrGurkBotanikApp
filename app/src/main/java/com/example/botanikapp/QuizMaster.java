@@ -20,6 +20,7 @@ public class QuizMaster {
     static Vector<Integer> triviaQuestions = new Vector<Integer>();
     static Vector<Integer> multiAnswerQuestions = new Vector<Integer>();
     public static int score = 0;
+    public static int correctQuestions = 0;
 
     public static void prepareFCQuestions(int numQuestions){
 

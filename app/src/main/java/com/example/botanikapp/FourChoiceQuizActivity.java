@@ -53,6 +53,8 @@ public class FourChoiceQuizActivity extends Activity {
     Button btn7;
     Button btn8;
     Button confirm;
+
+    Button result;
     ImageView imageView;
 
     MultiAnswerQuestion multiAnswerQuestion;
@@ -60,7 +62,7 @@ public class FourChoiceQuizActivity extends Activity {
 
     TextView questionTV;
     TextView timerTV;
-    TextView scoreTV;
+    TextView resultTV;
 
     ProgressBar progressBar;
 
@@ -76,8 +78,10 @@ public class FourChoiceQuizActivity extends Activity {
     int timerCount = 0;
     int timerTime = 0;
     int timerFull = 0;
+    int timerMax = 0;
 
     int timerDelta = 1000;
+    int failTries = 0;
 
     int difficulty;
 
@@ -96,6 +100,7 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     private void initFourChoice(){
+        timerTime = 7; //todo magic number
         setContentView(R.layout.quiz_normal);
 
         btn1 = (Button) findViewById(R.id.choice_button_1);
@@ -137,6 +142,7 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     private void initMATrivia(){
+        timerTime = 7 * 2; //todo magic number
         setContentView(R.layout.quiz_multi2);
         questionTV = (TextView) findViewById(R.id.triviaQuestion2);
         btn1 = (Button) findViewById(R.id.button11);
@@ -279,7 +285,12 @@ public class FourChoiceQuizActivity extends Activity {
     }
     private void submitArray(){
         ResultChecker checkResult = multiAnswerQuestion.check(arrAnswers);
+        if(checkResult.check()){
+            QuizMaster.correctQuestions++;
+            QuizMaster.score += timerMax - timerCount;
+        }
         colorMultiButtonSubmit(checkResult.arr);
+
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
                 public void run() {
@@ -423,14 +434,12 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     public void startQuiz(){
-        timerTime = (3/1) * 7000;
+        timerTime = 7000;
         timerFull = timerTime;
 
         QuizMaster.newGame(5);
         currentQuestion = -1;
         nextQuestion();
-
-        //startTimer(timerTime * 100);
 
     }
 
@@ -535,45 +544,29 @@ public class FourChoiceQuizActivity extends Activity {
 
 
         if(answer == correctAnswer){
-            currentQuestion++;
-            playerScore++;
-
-
-            if (currentQuestion == 10){
-                //Show the dialog
-                resultsPage();
-
-            }else{
-
-                switch (answer) {
-                    case 0:
-                        btn1.setBackgroundColor(Color.GREEN);
-                        break;
-                    case 1:
-                        btn2.setBackgroundColor(Color.GREEN);
-                        break;
-                    case 2:
-                        btn3.setBackgroundColor(Color.GREEN);
-                        break;
-                    case 3:
-                        btn4.setBackgroundColor(Color.GREEN);
-                        break;
-                }
-
-                final int finalAnswer = answer;
-
-                //Toast.makeText(this, "Richtig " + playerScore, Toast.LENGTH_SHORT).show();
-                // SLEEP 2 SECONDS HERE ...
-                Handler handler = new Handler();
-                handler.postDelayed(new Runnable() {
-                    public void run() {
-                        nextQuestion();
-                    }
-                }, 500);
-
+            QuizMaster.correctQuestions++;
+            QuizMaster.score += timerMax - timerCount;
+            switch (answer) {
+                case 0:
+                    btn1.setBackgroundColor(Color.GREEN);
+                    break;
+                case 1:
+                    btn2.setBackgroundColor(Color.GREEN);
+                    break;
+                case 2:
+                    btn3.setBackgroundColor(Color.GREEN);
+                    break;
+                case 3:
+                    btn4.setBackgroundColor(Color.GREEN);
+                    break;
             }
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    nextQuestion();
+                }
+            }, 500);
         }else{
-            playerScore--;
             switch (answer) {
                 case 0:
                     btn1.setBackgroundColor(Color.RED);
@@ -603,31 +596,24 @@ public class FourChoiceQuizActivity extends Activity {
 
 
     private void resultsPage(){
+        setContentView(R.layout.result_layout);
+        resultTV = findViewById(R.id.resultText);
+        resultTV.setText("Punkte: " + QuizMaster.score + "\n Richtige Fragen: " + QuizMaster.correctQuestions + "/" + QuizMaster.questionTypes.size());
+        Button backBtn = findViewById(R.id.result_button);
+        backBtn.setText("Hauptmenue");
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainMenu();
+            }
+        });
 
-        String msg = "";
-
-        /*
-        currentQuestion = 0;
-
-        if(timerTime > timerCount){
-            msg = "Congrats!";
-        }
-
-        timer.cancel();
-
-        Intent resultIntent = new Intent(this , ResultsActivity.class);
-        resultIntent.putExtra("EXTRA_PLAYER_SCORE", playerScore);
-        resultIntent.putExtra("EXTRA_TIMER_COUNT", timerCount);
-        resultIntent.putExtra("EXTRA_TIMER_TIME", timerTime);
-
-        this.startActivity(resultIntent);
-*/
-        finish();
     }
 
     private void nextQuestion(){
         if(++currentQuestion >= QuizMaster.questionTypes.size()){
             resultsPage();
+            return;
         }
         int qType = QuizMaster.questionTypes.elementAt(currentQuestion);
         setMode(qType);
@@ -655,4 +641,8 @@ public class FourChoiceQuizActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void mainMenu(){
+        Intent challengeIntent = new Intent(this , MainActivity.class);
+        startActivity(challengeIntent);
+    }
 }
