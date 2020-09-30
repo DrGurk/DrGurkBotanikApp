@@ -16,20 +16,47 @@ public class QuizMaster {
     public static Vector<PlantInfo> plantInfos;
     static Vector<Integer> questionTypes = new Vector<Integer>();
 
-    public int score = 0;
+
+    static Vector<Integer> triviaQuestions = new Vector<Integer>();
+    static Vector<Integer> multiAnswerQuestions = new Vector<Integer>();
+    public static int score = 0;
 
     public static void prepareFCQuestions(int numQuestions){
-        for(Integer i : questionTypes){
-            questionTypes.add(new Integer(0));
-        }
+
     }
 
+    public static void setupQuestions(int numQuestions){
+        //triviaQuestions.add(3);
+        //triviaQuestions.add(6);
+        //triviaQuestions.add(9);
+        multiAnswerQuestions.add(1);
+        int tmp;
+        for(int i = 0; i < numQuestions; i++){
+            if (triviaQuestions.contains(i)) {
+                tmp = 1;
+            }
+            else if(multiAnswerQuestions.contains(i)){
+                tmp = 2;
+            }
+            else{
+                tmp = 0;
+            }
+            questionTypes.add(tmp);
+        }
+    }
     public static void prepareQuestions(Vector<Integer> in){
         for(Integer i : in){
             int tmp = i.intValue();
             tmp = tmp < 0 ? 0: tmp > 3 ? 3 : tmp;
             questionTypes.add(tmp);
         }
+    }
+    public static void newGame(){
+        newGame(10);
+    }
+    public static void newGame(int numQuestions){
+        score = 0;
+        setupQuestions(numQuestions);
     }
     public static void initialize(final Context ctx){
         initialized = true;
@@ -42,7 +69,8 @@ public class QuizMaster {
         for(Vector<String> vs : in){
             Tag t = new Tag();
             t.name = vs.elementAt(0);
-            for(int i = 1; i < vs.size(); i++){
+            t.question = vs.elementAt(1);
+            for(int i = 2; i < vs.size(); i++){
                 t.holders.add(vs.elementAt(i));
             }
             tags.add(t);
@@ -131,6 +159,7 @@ public class QuizMaster {
 
             }
         }
+        out.question = tag.question;
 
         int numFalseAnswers = 8 - numTrueAnswers;
         timeout = 0;
@@ -152,7 +181,6 @@ public class QuizMaster {
         }
 
         out.data = dataVector;
-        out.question = "Tag Question";
         return out;
 
     }

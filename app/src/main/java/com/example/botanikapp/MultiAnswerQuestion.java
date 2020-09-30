@@ -11,15 +11,15 @@ public class MultiAnswerQuestion implements Question {
 
     }
 
-    public boolean check(boolean[] in){
+    public ResultChecker check(boolean[] in){
+        ResultChecker out = new ResultChecker();
         if(in.length < data.size()){
-            return false;
+            out.arr[0] = true;
+            return out;
         }
         for(int i = 0; i < data.size(); i++){
-            if(in[i] != data.elementAt(i).bool){
-                return false;
-            }
+            out.arr[i] = in[i] ^ data.elementAt(i).bool;
         }
-        return true;
+        return out;
     }
 }

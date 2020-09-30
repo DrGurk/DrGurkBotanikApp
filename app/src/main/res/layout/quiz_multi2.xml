@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="#4CAF50"
     tools:context=".QuizNormal">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:textColor="#33b5e5"
+        android:textColor="#5AE533"
         android:textSize="50sp"
         android:textStyle="bold" />
 
@@ -45,9 +45,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="270dp"
                 android:layout_marginTop="85dp"
+                android:editable="false"
                 android:ems="10"
-                android:gravity="start|top"
-                android:inputType="textMultiLine"
+                android:gravity="center|start|top"
+                android:inputType="none"
                 android:text="123"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -157,7 +158,7 @@
                         android:layout_height="wrap_content"
                         android:layout_column="0"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Bestätigen" />
                 </TableRow>
 
             </TableLayout>

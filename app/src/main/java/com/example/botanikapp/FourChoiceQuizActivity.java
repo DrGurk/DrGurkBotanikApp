@@ -20,6 +20,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.Random;
 import java.io.InputStream;
@@ -31,6 +33,8 @@ public class FourChoiceQuizActivity extends Activity {
     public final String TAG = "QuizApp";
 
     ImageView mainIV;
+
+    int mode = -1;//0 = 4c, 1 = trivia, 2 = multianswer, 3 = multiimage
 
     public static ArrayList imagesShuffled;
 
@@ -54,6 +58,7 @@ public class FourChoiceQuizActivity extends Activity {
     MultiAnswerQuestion multiAnswerQuestion;
     TriviaQuestion triviaQuestion;
 
+    TextView questionTV;
     TextView timerTV;
     TextView scoreTV;
 
@@ -79,16 +84,16 @@ public class FourChoiceQuizActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //initFourChoice();
-        initMATrivia();
-        timerTime = (3/1) * 7000;
-        timerFull = timerTime;
-        progressBar.setMax(timerFull);
-
-        startQuiz2();
-
+        startQuiz();
     }
 
+    private void setupProgressBar(){
+        setupProgressBar(timerFull);
+    }
+    private void setupProgressBar(int maxTime){
+        progressBar = (ProgressBar) findViewById(R.id.time_progress);
+        progressBar.setMax(maxTime);
+    }
 
     private void initFourChoice(){
         setContentView(R.layout.quiz_normal);
@@ -98,10 +103,8 @@ public class FourChoiceQuizActivity extends Activity {
         btn3 = (Button) findViewById(R.id.choice_button_3);
         btn4 = (Button) findViewById(R.id.choice_button_4);
 
-        progressBar = (ProgressBar) findViewById(R.id.time_progress);
-
+        setupProgressBar();
         commonSetup();
-
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,6 +138,7 @@ public class FourChoiceQuizActivity extends Activity {
 
     private void initMATrivia(){
         setContentView(R.layout.quiz_multi2);
+        questionTV = (TextView) findViewById(R.id.triviaQuestion2);
         btn1 = (Button) findViewById(R.id.button11);
         btn2 = (Button) findViewById(R.id.button12);
         btn3 = (Button) findViewById(R.id.button21);
@@ -145,8 +149,9 @@ public class FourChoiceQuizActivity extends Activity {
         btn8 = (Button) findViewById(R.id.button42);
         confirm = (Button) findViewById(R.id.button9);
 
-        progressBar = (ProgressBar) findViewById(R.id.time_progress);
-        
+        setupProgressBar(timerFull * 2);
+
+
         commonSetup();
 
         clearButtonsMulti();
@@ -235,18 +240,104 @@ public class FourChoiceQuizActivity extends Activity {
         btn7.setBackground(d);
         btn8.setBackground(d);
     }
-    private void submitArray(){
-        boolean checkResult = multiAnswerQuestion.check(arrAnswers);
-        if(checkResult){
-            Toast.makeText(this, "Richtig " + playerScore, Toast.LENGTH_SHORT).show();
+
+    private void setMode(int in){
+        switch(in){
+            case 0:
+                if(mode != in){
+                    initFourChoice();
+                }
+                break;
+            case 1:
+                if(mode != in){
+
+                }
+                break;
+            case 2:
+                if(mode != in){
+                    initMATrivia();
+                }
+                break;
+            default:
         }
+        mode = in;
+    }
+
+    private void prepareQuestion(){
+        switch(mode){
+            case 0:
+                createFourChoiceQuestion();
+                break;
+            case 1:
+                createTriviaQuestion();
+                break;
+            case 2:
+                createMultiTriviaQuestion();
+                break;
+            default:
+        }
+    }
+    private void submitArray(){
+        ResultChecker checkResult = multiAnswerQuestion.check(arrAnswers);
+        colorMultiButtonSubmit(checkResult.arr);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
                 public void run() {
-                    createMultiTriviaQuestion();
+                    nextQuestion();
                 }
             }, 500);
 
+    }
+    
+    private void colorMultiButtonSubmit(boolean[] in){
+        if(in[0]){
+            btn1.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn1.setBackgroundColor(Color.GREEN);
+        }
+        if(in[1]){
+            btn2.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn2.setBackgroundColor(Color.GREEN);
+        }
+        if(in[2]){
+            btn3.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn3.setBackgroundColor(Color.GREEN);
+        }
+        if(in[3]){
+            btn4.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn4.setBackgroundColor(Color.GREEN);
+        }
+        if(in[4]){
+            btn5.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn5.setBackgroundColor(Color.GREEN);
+        }
+        if(in[5]){
+            btn6.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn6.setBackgroundColor(Color.GREEN);
+        }
+        if(in[6]){
+            btn7.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn7.setBackgroundColor(Color.GREEN);
+        }
+        if(in[7]){
+            btn8.setBackgroundColor(Color.RED);
+        }
+        else{
+            btn8.setBackgroundColor(Color.GREEN);
+        }
     }
     private void flip(int i){
         arrAnswers[i] = !arrAnswers[i];
@@ -258,54 +349,54 @@ public class FourChoiceQuizActivity extends Activity {
         }
         else{
             btn1.setBackground(d);
-            Toast.makeText(this, "Toasty ", Toast.LENGTH_SHORT).show();
         }
         if(arrAnswers[1]){
             btn2.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn2.setBackgroundColor(Color.TRANSPARENT);
+            btn2.setBackground(d);
         }
         if(arrAnswers[2]){
             btn3.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn3.setBackgroundColor(Color.TRANSPARENT);
+            btn3.setBackground(d);
         }
         if(arrAnswers[3]){
             btn4.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn4.setBackgroundColor(Color.TRANSPARENT);
+            btn4.setBackground(d);
         }
         if(arrAnswers[4]){
             btn5.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn5.setBackgroundColor(Color.TRANSPARENT);
+            btn5.setBackground(d);
         }
         if(arrAnswers[5]){
             btn6.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn6.setBackgroundColor(Color.TRANSPARENT);
+            btn6.setBackground(d);
         }
         if(arrAnswers[6]){
             btn7.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn7.setBackgroundColor(Color.TRANSPARENT);
+            btn7.setBackground(d);
         }
         if(arrAnswers[7]){
             btn8.setBackgroundColor(Color.BLUE);
         }
         else{
-            btn8.setBackgroundColor(Color.TRANSPARENT);
+            btn8.setBackground(d);
         }
 
     }
     private void commonSetup(){
 
+        progressBar = (ProgressBar) findViewById(R.id.time_progress);
 
         timerTV = (TextView) findViewById(R.id.timer_text_view);
 
@@ -332,23 +423,20 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     public void startQuiz(){
+        timerTime = (3/1) * 7000;
+        timerFull = timerTime;
 
-        //Get All the file names in an array
-        currentQuestion = 0;
-        createFourChoiceQuestion();
-        startTimer(timerTime * 100);
+        QuizMaster.newGame(5);
+        currentQuestion = -1;
+        nextQuestion();
 
-    }
-    public void startQuiz2(){
-
-        //Get All the file names in an array
-        currentQuestion = 0;
-
-        createMultiTriviaQuestion();
-        startTimer(timerTime * 100);
+        //startTimer(timerTime * 100);
 
     }
 
+    public void startTimer(){
+        startTimer(timerTime);
+    }
 
     public void  startTimer(int time){
         if(timer != null){
@@ -389,7 +477,7 @@ public class FourChoiceQuizActivity extends Activity {
         FourChoiceQuestion question = QuizMaster.getFourChoiceQuestion(getApplicationContext());
         correctAnswer = question.correct;
         String plant = question.answers.elementAt(correctAnswer).toLowerCase();
-        int noImages = Utility.getNumImagesForPlant(plant, "drawable", getApplicationContext());
+        int noImages = Utility.getNumImagesForPlant(plant, "drawable", getApplicationContext());//todo: change this
         final String str = plant + "_" + rnd.nextInt(noImages);
         imageView.setImageDrawable
                 (
@@ -409,7 +497,6 @@ public class FourChoiceQuizActivity extends Activity {
         btn3.setText(question.answers.elementAt(2));
         btn4.setText(question.answers.elementAt(3));
 
-        startTimer(timerTime);
 
     }
 
@@ -425,6 +512,7 @@ public class FourChoiceQuizActivity extends Activity {
 
         Random rnd = new Random();
         multiAnswerQuestion = QuizMaster.getMultiAnswerQuestion(getApplicationContext());
+        questionTV.setText(multiAnswerQuestion.question);
 
         if(multiAnswerQuestion.data.size() > 7){
             btn1.setText(multiAnswerQuestion.data.elementAt(0).str);
@@ -479,7 +567,7 @@ public class FourChoiceQuizActivity extends Activity {
                 Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     public void run() {
-                        createFourChoiceQuestion();
+                        nextQuestion();
                     }
                 }, 500);
 
@@ -506,15 +594,11 @@ public class FourChoiceQuizActivity extends Activity {
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
-                    createFourChoiceQuestion();
+                    nextQuestion();
                 }
             }, 500);
 
         }
-
-        //scoreTV.setText(getString(R.string.score_text)+playerScore);
-
-
     }
 
 
@@ -539,6 +623,16 @@ public class FourChoiceQuizActivity extends Activity {
         this.startActivity(resultIntent);
 */
         finish();
+    }
+
+    private void nextQuestion(){
+        if(++currentQuestion >= QuizMaster.questionTypes.size()){
+            resultsPage();
+        }
+        int qType = QuizMaster.questionTypes.elementAt(currentQuestion);
+        setMode(qType);
+        prepareQuestion();
+        startTimer();
     }
 
 
