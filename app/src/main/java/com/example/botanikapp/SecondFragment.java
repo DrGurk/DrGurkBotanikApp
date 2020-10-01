@@ -41,6 +41,23 @@ public class SecondFragment extends Fragment {
         view.findViewById(R.id.normalGame).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                QuizMaster.gameMode = 0;
+                Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
+                startActivity(challengeIntent);
+            }
+        });
+        view.findViewById(R.id.blitzButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QuizMaster.gameMode = 1;
+                Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
+                startActivity(challengeIntent);
+            }
+        });
+        view.findViewById(R.id.survivalButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                QuizMaster.gameMode = 2;
                 Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
                 startActivity(challengeIntent);
             }

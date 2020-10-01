@@ -19,7 +19,7 @@ public class PlantInfo {
             if(split.length == 2){
                 pi.name = split[0];
                 pi.primTag = split[1];
-                pi.numImages = Utility.getNumImagesForPlant(pi.name, "drawable", ctx);
+                pi.numImages = Utility.getNumImagesForPlant(pi.name.toLowerCase(), "drawable", ctx);
                 out.add(pi);
             }
             Vector<String> vSQuestions = Utility.readFile("questions_" + pi.name.toLowerCase(), "raw", ctx);

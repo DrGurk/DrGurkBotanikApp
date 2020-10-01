@@ -7,6 +7,7 @@ public class FourChoiceQuestion implements Question {
     String imagePath;
     Vector<String> answers = new Vector<String>();
     int correct;
+    int numImages;
 
     public void createQuestion(String dir, String[] stuff, Tag tag){
         Random rand = new Random();

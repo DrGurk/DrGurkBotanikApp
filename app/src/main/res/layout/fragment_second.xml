@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/art_5"
     tools:context=".SecondFragment">
 
     <TextView
@@ -19,23 +20,20 @@
         android:id="@+id/button_second"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="132dp"
         android:text="@string/previous"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2"
-        app:layout_constraintVertical_bias="0.417" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine3" />
 
     <Button
         android:id="@+id/normalGame"
         android:layout_width="168dp"
         android:layout_height="49dp"
-        android:layout_marginTop="116dp"
+        android:layout_marginTop="92dp"
         android:text="Normal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,8 +49,8 @@
 
     <EditText
         android:id="@+id/editTextTextMultiLine"
-        android:layout_width="208dp"
-        android:layout_height="124dp"
+        android:layout_width="204dp"
+        android:layout_height="73dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
@@ -65,7 +63,7 @@
     <EditText
         android:id="@+id/editTextTextMultiLine2"
         android:layout_width="205dp"
-        android:layout_height="131dp"
+        android:layout_height="85dp"
         android:layout_marginTop="4dp"
         android:ems="10"
         android:gravity="start|top"
@@ -75,4 +73,28 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/blitzButton" />
+
+    <Button
+        android:id="@+id/survivalButton"
+        android:layout_width="148dp"
+        android:layout_height="43dp"
+        android:text="Survival"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine2" />
+
+    <EditText
+        android:id="@+id/editTextTextMultiLine3"
+        android:layout_width="192dp"
+        android:layout_height="71dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        android:text="3 Versuche. Wie weit schaffst du es?"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/survivalButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,7 @@
 package com.example.botanikapp;
 
 import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class FourChoiceQuizActivity extends Activity {
     ImageView mainIV;
 
     int mode = -1;//0 = 4c, 1 = trivia, 2 = multianswer, 3 = multiimage
+    int gameMode = 0;//0 = normal, 1 = blitz, 2 = survival
 
     public static ArrayList imagesShuffled;
 
@@ -62,17 +64,13 @@ public class FourChoiceQuizActivity extends Activity {
 
     TextView questionTV;
     TextView timerTV;
-    TextView resultTV;
+
+    TextView failedTV;
 
     ProgressBar progressBar;
 
     //default button color
     Drawable d;
-    Color bg_col;
-    ColorDrawable buttonColor;
-    int buttonColorId;
-
-    int playerScore = 0;
 
     CountDownTimer timer;
     int timerCount = 0;
@@ -83,12 +81,21 @@ public class FourChoiceQuizActivity extends Activity {
     int timerDelta = 1000;
     int failTries = 0;
 
-    int difficulty;
+    int lives = 3;
+    boolean failed = false;
 
+
+    boolean answered = true;
+    String lastPlant;
+    int lastImg;
+
+    final int timerConstant = 7;
+    final int timerBlitz = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startQuiz();
+        gameMode = QuizMaster.gameMode;
     }
 
     private void setupProgressBar(){
@@ -100,7 +107,8 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     private void initFourChoice(){
-        timerTime = 7; //todo magic number
+        timerTime = getTimer();
+        timerMax = timerTime * timerDelta;
         setContentView(R.layout.quiz_normal);
 
         btn1 = (Button) findViewById(R.id.choice_button_1);
@@ -142,7 +150,8 @@ public class FourChoiceQuizActivity extends Activity {
     }
 
     private void initMATrivia(){
-        timerTime = 7 * 2; //todo magic number
+        timerTime = getTimer() * 2;
+        timerMax = timerTime * timerDelta;
         setContentView(R.layout.quiz_multi2);
         questionTV = (TextView) findViewById(R.id.triviaQuestion2);
         btn1 = (Button) findViewById(R.id.button11);
@@ -228,6 +237,49 @@ public class FourChoiceQuizActivity extends Activity {
         
     }
 
+    private void initTrivia(){
+        timerTime = getTimer(); //todo magic number
+        timerMax = timerTime * timerDelta;
+        setContentView(R.layout.quiz_trivia);
+
+        btn1 = (Button) findViewById(R.id.choice_button_1);
+        btn2 = (Button) findViewById(R.id.choice_button_2);
+        btn3 = (Button) findViewById(R.id.choice_button_3);
+        btn4 = (Button) findViewById(R.id.choice_button_4);
+
+        questionTV = (TextView) findViewById(R.id.triviaText);
+        setupProgressBar();
+        commonSetup();
+
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAnswer(0);
+            }
+        });
+
+        btn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAnswer(1);
+            }
+        });
+
+        btn3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAnswer(2);
+            }
+        });
+
+        btn4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                submitAnswer(3);
+            }
+        });
+    }
+
     private void clearButtonsMulti(){
         btn1.setBackgroundColor(Color.TRANSPARENT);
         btn2.setBackgroundColor(Color.TRANSPARENT);
@@ -256,7 +308,7 @@ public class FourChoiceQuizActivity extends Activity {
                 break;
             case 1:
                 if(mode != in){
-
+                    initTrivia();
                 }
                 break;
             case 2:
@@ -287,7 +339,9 @@ public class FourChoiceQuizActivity extends Activity {
         ResultChecker checkResult = multiAnswerQuestion.check(arrAnswers);
         if(checkResult.check()){
             QuizMaster.correctQuestions++;
-            QuizMaster.score += timerMax - timerCount;
+            QuizMaster.score += timerMax/timerDelta - timerCount;
+        }else{
+            failed = true;
         }
         colorMultiButtonSubmit(checkResult.arr);
 
@@ -430,21 +484,21 @@ public class FourChoiceQuizActivity extends Activity {
     protected void onResume() {
         super.onResume();
         timer.cancel();
-        startTimer(timerTime - (timerCount*timerDelta));
+        startTimer(timerTime* ((mode==2) ? 2: 1)*timerDelta - (timerCount*timerDelta));
     }
 
     public void startQuiz(){
-        timerTime = 7000;
-        timerFull = timerTime;
+        timerTime = getTimer();
+        timerFull = timerTime*timerDelta;
 
-        QuizMaster.newGame(5);
+        QuizMaster.newGame(getApplicationContext());
         currentQuestion = -1;
         nextQuestion();
 
     }
 
     public void startTimer(){
-        startTimer(timerTime);
+        startTimer(timerTime*timerDelta);
     }
 
     public void  startTimer(int time){
@@ -455,8 +509,6 @@ public class FourChoiceQuizActivity extends Activity {
         timer = new CountDownTimer(time, timerDelta) {
 
             public void onTick(long millisUntilFinished) {
-                //timerTV.setText(getString(R.string.timer_text) +" "+ millisUntilFinished / timerDelta);
-                //progressBar.setProgress(timerTime - (timerCount*timerDelta));
                 progressBar.setProgress((int) millisUntilFinished);
                 timerCount++;
             }
@@ -486,8 +538,9 @@ public class FourChoiceQuizActivity extends Activity {
         FourChoiceQuestion question = QuizMaster.getFourChoiceQuestion(getApplicationContext());
         correctAnswer = question.correct;
         String plant = question.answers.elementAt(correctAnswer).toLowerCase();
-        int noImages = Utility.getNumImagesForPlant(plant, "drawable", getApplicationContext());//todo: change this
-        final String str = plant + "_" + rnd.nextInt(noImages);
+        int noImages = question.numImages;
+        lastImg = rnd.nextInt(noImages);
+        final String str = plant + "_" + lastImg;
         imageView.setImageDrawable
                 (
                         getResources().getDrawable(Utility.getResourceID(str, "drawable",
@@ -498,6 +551,12 @@ public class FourChoiceQuizActivity extends Activity {
         btn3.setBackground(d);
         btn4.setBackground(d);
 
+
+        lastPlant = question.answers.elementAt(correctAnswer);
+
+        Toast.makeText(getApplicationContext(),correctAnswer + " ",Toast.LENGTH_SHORT).show();
+
+
         while(question.answers.size() < 4){
             question.answers.add("Error");
         }
@@ -507,9 +566,22 @@ public class FourChoiceQuizActivity extends Activity {
         btn4.setText(question.answers.elementAt(3));
 
 
+
     }
 
     private void createTriviaQuestion(){
+        if(lastPlant != null){
+            triviaQuestion = QuizMaster.getTriviaQuestion(lastPlant);
+            correctAnswer = triviaQuestion.correct;
+            btn1.setText(triviaQuestion.answers.elementAt(0));
+            btn2.setText(triviaQuestion.answers.elementAt(1));
+            btn3.setText(triviaQuestion.answers.elementAt(2));
+            btn4.setText(triviaQuestion.answers.elementAt(3));
+            questionTV.setText(triviaQuestion.question);
+
+        }else{
+            nextQuestion();
+        }
 
     }
 
@@ -544,8 +616,10 @@ public class FourChoiceQuizActivity extends Activity {
 
 
         if(answer == correctAnswer){
-            QuizMaster.correctQuestions++;
-            QuizMaster.score += timerMax - timerCount;
+            if(failTries == 0) {
+                QuizMaster.correctQuestions++;
+                QuizMaster.score += timerMax / timerDelta - timerCount;
+            }
             switch (answer) {
                 case 0:
                     btn1.setBackgroundColor(Color.GREEN);
@@ -567,6 +641,7 @@ public class FourChoiceQuizActivity extends Activity {
                 }
             }, 500);
         }else{
+            failed = true;
             switch (answer) {
                 case 0:
                     btn1.setBackgroundColor(Color.RED);
@@ -583,42 +658,79 @@ public class FourChoiceQuizActivity extends Activity {
                 default:
                     break;
             }
-            //Toast.makeText(this, "Falsch " + playerScore, Toast.LENGTH_SHORT).show();
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    nextQuestion();
-                }
-            }, 500);
+            if(failTries++ > 0) {
+                Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    public void run() {
+                        nextQuestion();
+                    }
+                }, 500);
+            }
 
         }
     }
 
 
     private void resultsPage(){
-        setContentView(R.layout.result_layout);
-        resultTV = findViewById(R.id.resultText);
-        resultTV.setText("Punkte: " + QuizMaster.score + "\n Richtige Fragen: " + QuizMaster.correctQuestions + "/" + QuizMaster.questionTypes.size());
-        Button backBtn = findViewById(R.id.result_button);
-        backBtn.setText("Hauptmenue");
-        backBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mainMenu();
-            }
-        });
+        Intent challengeIntent = new Intent(this, ResultsActivity.class);
+        startActivity(challengeIntent);
 
     }
 
     private void nextQuestion(){
-        if(++currentQuestion >= QuizMaster.questionTypes.size()){
-            resultsPage();
+        if(gameMode == 2){
+            QuizMaster.numQuestionsSurvival++;
+            if(failed){
+                if(--lives == 0 ){
+                    resultsPage();
+                    return;
+                }else{
+                Toast.makeText(getApplicationContext(),"Noch " + lives + " Versuch(e)!",Toast.LENGTH_SHORT).show();}
+            }
+        }
+        failed = false;
+        if(failTries > 0){
+            setContentView(R.layout.failed_layout);
+            btn1 = (Button) findViewById(R.id.failButton);
+            failedTV = (TextView) findViewById(R.id.failText);
+            failedTV.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vestibulum consequat purus, sed dapibus nisl egestas at. Etiam fringilla, lorem in dictum iaculis, ex lorem egestas risus, sed auctor est libero at sapien.");
+
+            imageView = (ImageView) findViewById(R.id.main_image_view);
+
+            final String str = lastPlant.toLowerCase() + "_" + lastImg;
+            imageView.setImageDrawable
+                    (
+                            getResources().getDrawable(Utility.getResourceID(str, "drawable",
+                                    getApplicationContext()))
+                    );
+
+            mode = -1;
+            failTries = 0;
+            btn1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    nextQuestion();
+                }
+            });
+
             return;
         }
-        int qType = QuizMaster.questionTypes.elementAt(currentQuestion);
-        setMode(qType);
-        prepareQuestion();
-        startTimer();
+        if(++currentQuestion >= QuizMaster.questionTypes.size()){
+            if(gameMode == 2){
+                currentQuestion = 0;
+            }else {
+                resultsPage();
+                return;
+            }
+        }
+
+        else {
+            int qType = QuizMaster.questionTypes.elementAt(currentQuestion);
+            setMode(qType);
+            prepareQuestion();
+            int time = getTimer() * timerDelta * ((mode == 2) ? 2 : 1);
+            startTimer(time);
+        }
     }
 
 
@@ -645,4 +757,15 @@ public class FourChoiceQuizActivity extends Activity {
         Intent challengeIntent = new Intent(this , MainActivity.class);
         startActivity(challengeIntent);
     }
+
+    private int getTimer(){
+        switch(gameMode){
+            case 0: return 7;
+            case 1: return 4;
+            case 2: return 7;
+            default: return 0;
+        }
+    }
+
+
 }

@@ -17,10 +17,12 @@ public class QuizMaster {
     static Vector<Integer> questionTypes = new Vector<Integer>();
 
 
+    static int gameMode = 0;
     static Vector<Integer> triviaQuestions = new Vector<Integer>();
     static Vector<Integer> multiAnswerQuestions = new Vector<Integer>();
     public static int score = 0;
     public static int correctQuestions = 0;
+    public static int numQuestionsSurvival = 0;
 
     public static void prepareFCQuestions(int numQuestions){
 
@@ -52,12 +54,20 @@ public class QuizMaster {
             questionTypes.add(tmp);
         }
     }
-    public static void newGame(){
-        newGame(10);
-    }
-    public static void newGame(int numQuestions){
+    //public static void newGame(Context ctx){
+     //   newGame(10, ctx);
+    //}
+    public static void newGame( Context ctx){
         score = 0;
-        setupQuestions(numQuestions);
+        correctQuestions = 0;
+        questionTypes.clear();
+        Vector<String> questionTypes = Utility.readFile("fragentypen", "raw",  ctx);
+        Vector<Integer> ints = new Vector<Integer>();
+            for (String s : questionTypes) {
+                    ints.add(Integer.parseInt(s));
+            }
+
+        prepareQuestions(ints);
     }
     public static void initialize(final Context ctx){
         initialized = true;
@@ -85,8 +95,10 @@ public class QuizMaster {
         int rng = -1;
         rng = rand.nextInt(plantInfos.size());
 
-        correct = plantInfos.elementAt(rng).name;
-        strtag = plantInfos.elementAt(rng).primTag;
+        PlantInfo pi = plantInfos.elementAt(rng);
+        correct = pi.name;
+        strtag = pi.primTag;
+        out.numImages = pi.numImages;
         out.answers.add(correct);
 
         Tag tag = new Tag();
@@ -120,22 +132,25 @@ public class QuizMaster {
         return out;
     }
 
-    public static TriviaQuestion getTriviaQuestion(final Context ctx){
+    public static TriviaQuestion getTriviaQuestion(String in){
 
-        String correct;
-        String strtag;
-        int rng = -1;
-        rng = rand.nextInt(plantInfos.size());
-        PlantInfo plantInfo = plantInfos.elementAt(rng);
-        rng = rand.nextInt(plantInfo.triviaQuestions.size());
+        PlantInfo plantInfo = new PlantInfo();
+        for(PlantInfo pi : plantInfos){
+            if(pi.name.equals(in)){
+                plantInfo = pi;
+                break;
+            }
+        }
+        int rng = rand.nextInt(plantInfo.triviaQuestions.size());
         TriviaQuestionData triviaQuestionData = plantInfo.triviaQuestions.elementAt(rng);
-
-        return new TriviaQuestion(triviaQuestionData);
+        TriviaQuestion out = new TriviaQuestion(triviaQuestionData);
+        out.shuffle();
+        return out;
     }
 
     public static MultiAnswerQuestion getMultiAnswerQuestion(final Context ctx){
         MultiAnswerQuestion out = new MultiAnswerQuestion();
-        int numTrueAnswers = rand.nextInt(1) + 1;
+        int numTrueAnswers = rand.nextInt(2) + 1;
         int rng = rand.nextInt(QuizMaster.tags.size());
 
         Vector<Integer> added = new Vector<Integer>();
@@ -181,6 +196,7 @@ public class QuizMaster {
             }
         }
 
+        Collections.shuffle(dataVector);
         out.data = dataVector;
         return out;
 

@@ -6,7 +6,7 @@ import java.util.Vector;
 public class TriviaQuestion implements Question {
 
     String question;
-    Vector<String> answers;
+    Vector<String> answers = new Vector<String>();
     int correct;
     @Override
     public void createQuestion(String dir, String[] stuff, Tag tag) {
@@ -30,7 +30,7 @@ public class TriviaQuestion implements Question {
             if(!answers.contains(in.wrongAnswers.elementAt(rng))) {
                 answers.add(in.wrongAnswers.elementAt(rng));
             }
-            if(answers.size() >= 3){
+            if(answers.size() > 3){
                 break;
             }
         }
