@@ -543,7 +543,7 @@ public class FourChoiceQuizActivity extends Activity {
         final String str = plant + "_" + lastImg;
         imageView.setImageDrawable
                 (
-                        getResources().getDrawable(Utility.getResourceID(str, "drawable",
+                        getResources().getDrawable(Utility.getResourceID(Utility.androidString(str), "drawable",
                                 getApplicationContext()))
                 );
         btn1.setBackground(d);
@@ -693,14 +693,15 @@ public class FourChoiceQuizActivity extends Activity {
             setContentView(R.layout.failed_layout);
             btn1 = (Button) findViewById(R.id.failButton);
             failedTV = (TextView) findViewById(R.id.failText);
-            failedTV.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vestibulum consequat purus, sed dapibus nisl egestas at. Etiam fringilla, lorem in dictum iaculis, ex lorem egestas risus, sed auctor est libero at sapien.");
+            Vector<String> desc = Utility.readFile("description_" + Utility.androidString(lastPlant), "raw", getApplicationContext());
+            failedTV.setText(desc.elementAt(0));
 
             imageView = (ImageView) findViewById(R.id.main_image_view);
 
-            final String str = lastPlant.toLowerCase() + "_" + lastImg;
+            final String str = Utility.androidString(lastPlant) + "_" + lastImg;
             imageView.setImageDrawable
                     (
-                            getResources().getDrawable(Utility.getResourceID(str, "drawable",
+                            getResources().getDrawable(Utility.getResourceID(Utility.androidString(str), "drawable",
                                     getApplicationContext()))
                     );
 

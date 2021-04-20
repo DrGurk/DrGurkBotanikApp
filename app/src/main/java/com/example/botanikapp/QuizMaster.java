@@ -13,7 +13,7 @@ public class QuizMaster {
     static Random rand = new Random();
     static boolean initialized = false;
     static Vector<Tag> tags = new Vector<Tag>();
-    public static Vector<PlantInfo> plantInfos;
+    public static Vector<PlantInfo> plantInfos = new Vector<PlantInfo>();
     static Vector<Integer> questionTypes = new Vector<Integer>();
 
 
@@ -73,7 +73,8 @@ public class QuizMaster {
         initialized = true;
 
         insertTags(Utility.readTags(ctx));
-        plantInfos = PlantInfo.getPlantInfos(Utility.readFile("primary_tags", "raw",ctx), ctx);
+        System.out.println("Plant read");
+        PlantInfo.getPlantInfos(Utility.readFile("tags", "raw",ctx), ctx);
     }
 
     private static void insertTags(Vector<Vector<String>> in){
@@ -94,11 +95,14 @@ public class QuizMaster {
         String strtag;
         int rng = -1;
         rng = rand.nextInt(plantInfos.size());
-
-        PlantInfo pi = plantInfos.elementAt(rng);
+        PlantInfo pi;
+        do{
+            pi = plantInfos.elementAt(rng);
+            out.numImages = pi.numImages;}
+        while(out.numImages < 1);
         correct = pi.name;
-        strtag = pi.primTag;
-        out.numImages = pi.numImages;
+        strtag = pi.tags.elementAt(rand.nextInt(pi.tags.size()));
+
         out.answers.add(correct);
 
         Tag tag = new Tag();
@@ -148,6 +152,14 @@ public class QuizMaster {
         return out;
     }
 
+    public static PlantInfo getPlant(String name){
+        for (PlantInfo pi: plantInfos){
+            if(pi.name.equals(name)){
+                return pi;
+            }
+        }
+        return new PlantInfo();
+    }
     public static MultiAnswerQuestion getMultiAnswerQuestion(final Context ctx){
         MultiAnswerQuestion out = new MultiAnswerQuestion();
         int numTrueAnswers = rand.nextInt(2) + 1;

@@ -84,6 +84,8 @@ public class Utility {
             }
             myReader.close();
         } catch (Exception e) {
+            System.out.println(file);
+            System.out.println(out);
             System.out.println("No file could be read.");
             e.printStackTrace();
         }
@@ -98,7 +100,7 @@ public class Utility {
                 String data = myReader.nextLine();
                 out.add(new Vector<String>());
                 out.lastElement().add(data);
-                String file = "tag_" + data.toLowerCase();
+                String file = "tag_" + androidString(data);
                 InputStream innerInputStream = ctx.getResources().openRawResource(Utility.getResourceID(file, "raw",
                         ctx.getApplicationContext()));
                 Scanner innerReader = new Scanner(innerInputStream);
@@ -114,5 +116,9 @@ public class Utility {
             e.printStackTrace();
         }
         return out;
+    }
+
+    public static String androidString(String in){
+        return in.replace("ä", "ae").replace("ö","oe").replace("ü", "ue").replace(" ", "_").replace("(", "_").replace(')', '_').replace("-", "_").replace(",", "_").replace('.', '_').replace("ß", "ss").toLowerCase();
     }
 }

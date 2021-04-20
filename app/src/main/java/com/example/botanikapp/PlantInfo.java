@@ -5,28 +5,33 @@ import android.content.Context;
 import java.util.Vector;
 
 public class PlantInfo {
+    public boolean init = true;
     public String name;
-    public String primTag;
+    public Vector<String> tags = new Vector<String>();
     public Vector<TriviaQuestionData> triviaQuestions = new Vector<TriviaQuestionData>();
     public int numImages;
 
     public PlantInfo(){};
-    public static Vector<PlantInfo> getPlantInfos(Vector<String> in, final Context ctx){
+    public static void getPlantInfos(Vector<String> in, final Context ctx){
         Vector<PlantInfo> out = new Vector<PlantInfo>();
         for(String s: in){
-            PlantInfo pi = new PlantInfo();
-            String[] split = s.split(",");
-            if(split.length == 2){
-                pi.name = split[0];
-                pi.primTag = split[1];
-                pi.numImages = Utility.getNumImagesForPlant(pi.name.toLowerCase(), "drawable", ctx);
-                out.add(pi);
-            }
-            Vector<String> vSQuestions = Utility.readFile("questions_" + pi.name.toLowerCase(), "raw", ctx);
-            pi.addQuestions(vSQuestions);
-        }
+            Vector<String> plants = Utility.readFile("tag_" + Utility.androidString(s), "raw", ctx);
+            for(int i = 1; i < plants.size();i++) {
+                String str = plants.elementAt(i);
+                PlantInfo pi = QuizMaster.getPlant(str);
+                pi.tags.add(s);
+                if(pi.init){
+                    pi.name = str;
 
-        return out;
+                    Vector<String> vSQuestions = Utility.readFile("questions_" + Utility.androidString(pi.name), "raw", ctx);
+                    pi.addQuestions(vSQuestions);
+                    pi.numImages = Utility.getNumImagesForPlant(Utility.androidString(pi.name), "drawable", ctx);
+                    if(pi.numImages > 0) {
+                        QuizMaster.plantInfos.add(pi);
+                    }
+                }
+            }
+        }
     }
 
     public void addQuestions(Vector<String> in){
