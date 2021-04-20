@@ -41,7 +41,7 @@ public class ResultsActivity extends Activity {
         int numQuestions = QuizMaster.gameMode == 2 ? QuizMaster.numQuestionsSurvival : QuizMaster.questionTypes.size();
         resultTV.setText("Punkte: " + QuizMaster.score + "\n Richtige Fragen: " + QuizMaster.correctQuestions + "/" + numQuestions);
         Button backBtn = findViewById(R.id.result_button);
-        backBtn.setText("Hauptmenue");
+        backBtn.setText("Hauptmenü");
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

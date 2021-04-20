@@ -760,9 +760,9 @@ public class FourChoiceQuizActivity extends Activity {
 
     private int getTimer(){
         switch(gameMode){
-            case 0: return 7;
-            case 1: return 4;
-            case 2: return 7;
+            case 0: return 10;
+            case 1: return 5;
+            case 2: return 10;
             default: return 0;
         }
     }

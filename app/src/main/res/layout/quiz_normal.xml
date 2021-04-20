@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="#305932"
     tools:context=".QuizNormal">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -24,10 +24,10 @@
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#4CAF50"
+        android:background="@drawable/art_1"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:textColor="#33b5e5"
+        android:textColor="#3B713D"
         android:textSize="50sp"
         android:textStyle="bold" />
 

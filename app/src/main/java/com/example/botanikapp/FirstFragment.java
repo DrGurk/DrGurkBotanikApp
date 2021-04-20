@@ -30,14 +30,14 @@ public class FirstFragment extends Fragment {
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
-        /*
+
         view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent challengeIntent = new Intent(getActivity() , VideoActivity.class);
                 startActivity(challengeIntent);
             }
-        });*/
+        });
         view.findViewById(R.id.exitButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
