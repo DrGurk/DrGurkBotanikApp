@@ -537,7 +537,7 @@ public class FourChoiceQuizActivity extends Activity {
         Random rnd = new Random();
         FourChoiceQuestion question = QuizMaster.getFourChoiceQuestion(getApplicationContext());
         correctAnswer = question.correct;
-        String plant = question.answers.elementAt(correctAnswer).toLowerCase();
+        String plant = question.answers.elementAt(correctAnswer).toLowerCase(); //todo check
         int noImages = question.numImages;
         lastImg = rnd.nextInt(noImages);
         final String str = plant + "_" + lastImg;
@@ -552,9 +552,8 @@ public class FourChoiceQuizActivity extends Activity {
         btn4.setBackground(d);
 
 
-        lastPlant = question.answers.elementAt(correctAnswer);
+        lastPlant = Utility.androidString(question.answers.elementAt(correctAnswer));
 
-        Toast.makeText(getApplicationContext(),correctAnswer + " ",Toast.LENGTH_SHORT).show();
 
 
         while(question.answers.size() < 4){
@@ -571,7 +570,7 @@ public class FourChoiceQuizActivity extends Activity {
 
     private void createTriviaQuestion(){
         if(lastPlant != null){
-            triviaQuestion = QuizMaster.getTriviaQuestion(lastPlant);
+            triviaQuestion = QuizMaster.getRandomTriviaQuestion();
             correctAnswer = triviaQuestion.correct;
             btn1.setText(triviaQuestion.answers.elementAt(0));
             btn2.setText(triviaQuestion.answers.elementAt(1));
@@ -693,12 +692,12 @@ public class FourChoiceQuizActivity extends Activity {
             setContentView(R.layout.failed_layout);
             btn1 = (Button) findViewById(R.id.failButton);
             failedTV = (TextView) findViewById(R.id.failText);
-            Vector<String> desc = Utility.readFile("description_" + Utility.androidString(lastPlant), "raw", getApplicationContext());
+            Vector<String> desc = Utility.readFile("description_" + lastPlant, "raw", getApplicationContext());
             failedTV.setText(desc.elementAt(0));
 
             imageView = (ImageView) findViewById(R.id.main_image_view);
 
-            final String str = Utility.androidString(lastPlant) + "_" + lastImg;
+            final String str = lastPlant + "_" + lastImg;
             imageView.setImageDrawable
                     (
                             getResources().getDrawable(Utility.getResourceID(Utility.androidString(str), "drawable",

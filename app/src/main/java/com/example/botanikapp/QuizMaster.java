@@ -14,39 +14,17 @@ public class QuizMaster {
     static boolean initialized = false;
     static Vector<Tag> tags = new Vector<Tag>();
     public static Vector<PlantInfo> plantInfos = new Vector<PlantInfo>();
+    public static Vector<PlantInfo> plantsWithQuestions = new Vector<PlantInfo>();
     static Vector<Integer> questionTypes = new Vector<Integer>();
 
 
     static int gameMode = 0;
-    static Vector<Integer> triviaQuestions = new Vector<Integer>();
-    static Vector<Integer> multiAnswerQuestions = new Vector<Integer>();
+
     public static int score = 0;
     public static int correctQuestions = 0;
     public static int numQuestionsSurvival = 0;
 
-    public static void prepareFCQuestions(int numQuestions){
 
-    }
-
-    public static void setupQuestions(int numQuestions){
-        //triviaQuestions.add(3);
-        //triviaQuestions.add(6);
-        //triviaQuestions.add(9);
-        multiAnswerQuestions.add(1);
-        int tmp;
-        for(int i = 0; i < numQuestions; i++){
-            if (triviaQuestions.contains(i)) {
-                tmp = 1;
-            }
-            else if(multiAnswerQuestions.contains(i)){
-                tmp = 2;
-            }
-            else{
-                tmp = 0;
-            }
-            questionTypes.add(tmp);
-        }
-    }
     public static void prepareQuestions(Vector<Integer> in){
         for(Integer i : in){
             int tmp = i.intValue();
@@ -57,6 +35,14 @@ public class QuizMaster {
     //public static void newGame(Context ctx){
      //   newGame(10, ctx);
     //}
+
+    public static void initializeTriviaQuestions(final Context ctx){
+        for(PlantInfo pi : plantInfos){
+            if (pi.triviaQuestions.size() > 0){
+                plantsWithQuestions.add(pi);
+            }
+        }
+    }
     public static void newGame( Context ctx){
         score = 0;
         correctQuestions = 0;
@@ -75,7 +61,9 @@ public class QuizMaster {
         insertTags(Utility.readTags(ctx));
         System.out.println("Plant read");
         PlantInfo.getPlantInfos(Utility.readFile("tags", "raw",ctx), ctx);
+        initializeTriviaQuestions(ctx);
     }
+
 
     private static void insertTags(Vector<Vector<String>> in){
         for(Vector<String> vs : in){
@@ -145,6 +133,19 @@ public class QuizMaster {
                 break;
             }
         }
+        if(plantInfo.triviaQuestions.size() == 0){
+            return null;
+        }
+        int rng = rand.nextInt(plantInfo.triviaQuestions.size());
+        TriviaQuestionData triviaQuestionData = plantInfo.triviaQuestions.elementAt(rng);
+        TriviaQuestion out = new TriviaQuestion(triviaQuestionData);
+        out.shuffle();
+        return out;
+    }
+    public static TriviaQuestion getRandomTriviaQuestion(){
+
+        PlantInfo plantInfo = plantsWithQuestions.elementAt(rand.nextInt(plantsWithQuestions.size()));
+
         int rng = rand.nextInt(plantInfo.triviaQuestions.size());
         TriviaQuestionData triviaQuestionData = plantInfo.triviaQuestions.elementAt(rng);
         TriviaQuestion out = new TriviaQuestion(triviaQuestionData);
@@ -167,6 +168,9 @@ public class QuizMaster {
 
         Vector<Integer> added = new Vector<Integer>();
         Tag tag = tags.elementAt(rng);
+        while(tag.holders.size() < 4 || tag.question.equals("null")){
+            tag = tags.elementAt(rand.nextInt(QuizMaster.tags.size()));
+        }
         Vector<MultiAnswerData> dataVector = new Vector<MultiAnswerData>();
         int timeout = 0;
         for(int i = 0; i < numTrueAnswers; i++){
