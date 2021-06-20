@@ -31,14 +31,8 @@ import java.util.Vector;
 
 public class FourChoiceQuizActivity extends Activity {
 
-    public final String TAG = "QuizApp";
-
-    ImageView mainIV;
-
     int mode = -1;//0 = 4c, 1 = trivia, 2 = multianswer, 3 = multiimage
     int gameMode = 0;//0 = normal, 1 = blitz, 2 = survival
-
-    public static ArrayList imagesShuffled;
 
     int correctAnswer;
 
@@ -52,8 +46,6 @@ public class FourChoiceQuizActivity extends Activity {
     //Extra Buttons for other quizzes 
     Button btn5;
     Button btn6;
-    Button btn7;
-    Button btn8;
     Button confirm;
 
     Button result;
@@ -85,12 +77,9 @@ public class FourChoiceQuizActivity extends Activity {
     boolean failed = false;
 
 
-    boolean answered = true;
     String lastPlant;
     int lastImg;
 
-    final int timerConstant = 7;
-    final int timerBlitz = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -160,8 +149,6 @@ public class FourChoiceQuizActivity extends Activity {
         btn4 = (Button) findViewById(R.id.button22);
         btn5 = (Button) findViewById(R.id.button31);
         btn6 = (Button) findViewById(R.id.button32);
-        btn7 = (Button) findViewById(R.id.button41);
-        btn8 = (Button) findViewById(R.id.button42);
         confirm = (Button) findViewById(R.id.button9);
 
         setupProgressBar(timerFull * 2);
@@ -213,19 +200,6 @@ public class FourChoiceQuizActivity extends Activity {
             }
         });
 
-        btn7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flip(6);
-            }
-        });
-
-        btn8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                flip(7);
-            }
-        });
 
         confirm.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -287,16 +261,12 @@ public class FourChoiceQuizActivity extends Activity {
         btn4.setBackgroundColor(Color.TRANSPARENT);
         btn5.setBackgroundColor(Color.TRANSPARENT);
         btn6.setBackgroundColor(Color.TRANSPARENT);
-        btn7.setBackgroundColor(Color.TRANSPARENT);
-        btn8.setBackgroundColor(Color.TRANSPARENT);
         btn1.setBackground(d);
         btn2.setBackground(d);
         btn3.setBackground(d);
         btn4.setBackground(d);
         btn5.setBackground(d);
         btn6.setBackground(d);
-        btn7.setBackground(d);
-        btn8.setBackground(d);
     }
 
     private void setMode(int in){
@@ -391,18 +361,6 @@ public class FourChoiceQuizActivity extends Activity {
         else{
             btn6.setBackgroundColor(Color.GREEN);
         }
-        if(in[6]){
-            btn7.setBackgroundColor(Color.RED);
-        }
-        else{
-            btn7.setBackgroundColor(Color.GREEN);
-        }
-        if(in[7]){
-            btn8.setBackgroundColor(Color.RED);
-        }
-        else{
-            btn8.setBackgroundColor(Color.GREEN);
-        }
     }
     private void flip(int i){
         arrAnswers[i] = !arrAnswers[i];
@@ -444,18 +402,6 @@ public class FourChoiceQuizActivity extends Activity {
         }
         else{
             btn6.setBackground(d);
-        }
-        if(arrAnswers[6]){
-            btn7.setBackgroundColor(Color.BLUE);
-        }
-        else{
-            btn7.setBackground(d);
-        }
-        if(arrAnswers[7]){
-            btn8.setBackgroundColor(Color.BLUE);
-        }
-        else{
-            btn8.setBackground(d);
         }
 
     }
@@ -555,10 +501,14 @@ public class FourChoiceQuizActivity extends Activity {
         lastPlant = Utility.androidString(question.answers.elementAt(correctAnswer));
 
 
-
-        while(question.answers.size() < 4){
-            question.answers.add("Error");
+        if(question.answers.size() < 4){
+            createFourChoiceQuestion();
+            return;
         }
+
+        /*while(question.answers.size() < 4){
+            question.answers.add("Error");
+        }*/
         btn1.setText(question.answers.elementAt(0));
         btn2.setText(question.answers.elementAt(1));
         btn3.setText(question.answers.elementAt(2));
@@ -590,19 +540,16 @@ public class FourChoiceQuizActivity extends Activity {
             arrAnswers[i] = false;
         }
 
-        Random rnd = new Random();
         multiAnswerQuestion = QuizMaster.getMultiAnswerQuestion(getApplicationContext());
         questionTV.setText(multiAnswerQuestion.question);
 
-        if(multiAnswerQuestion.data.size() > 7){
+        if(multiAnswerQuestion.data.size() > 5){
             btn1.setText(multiAnswerQuestion.data.elementAt(0).str);
             btn2.setText(multiAnswerQuestion.data.elementAt(1).str);
             btn3.setText(multiAnswerQuestion.data.elementAt(2).str);
             btn4.setText(multiAnswerQuestion.data.elementAt(3).str);
             btn5.setText(multiAnswerQuestion.data.elementAt(4).str);
             btn6.setText(multiAnswerQuestion.data.elementAt(5).str);
-            btn7.setText(multiAnswerQuestion.data.elementAt(6).str);
-            btn8.setText(multiAnswerQuestion.data.elementAt(7).str);
         }
 
     }
@@ -673,6 +620,7 @@ public class FourChoiceQuizActivity extends Activity {
     private void resultsPage(){
         Intent challengeIntent = new Intent(this, ResultsActivity.class);
         startActivity(challengeIntent);
+        finish();
 
     }
 
@@ -756,6 +704,7 @@ public class FourChoiceQuizActivity extends Activity {
     private void mainMenu(){
         Intent challengeIntent = new Intent(this , MainActivity.class);
         startActivity(challengeIntent);
+        finish();
     }
 
     private int getTimer(){

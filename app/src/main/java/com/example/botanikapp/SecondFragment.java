@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -44,6 +45,7 @@ public class SecondFragment extends Fragment {
                 QuizMaster.gameMode = 0;
                 Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
                 startActivity(challengeIntent);
+                getActivity().finish();
             }
         });
         view.findViewById(R.id.blitzButton).setOnClickListener(new View.OnClickListener() {
@@ -52,6 +54,7 @@ public class SecondFragment extends Fragment {
                 QuizMaster.gameMode = 1;
                 Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
                 startActivity(challengeIntent);
+                getActivity().finish();
             }
         });
         view.findViewById(R.id.survivalButton).setOnClickListener(new View.OnClickListener() {
@@ -60,6 +63,7 @@ public class SecondFragment extends Fragment {
                 QuizMaster.gameMode = 2;
                 Intent challengeIntent = new Intent(getActivity() , FourChoiceQuizActivity.class);
                 startActivity(challengeIntent);
+                getActivity().finish();
             }
         });
     }

@@ -43,7 +43,7 @@
             <EditText
                 android:id="@+id/triviaQuestion2"
                 android:layout_width="match_parent"
-                android:layout_height="270dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="85dp"
                 android:clickable="false"
                 android:editable="false"
@@ -58,8 +58,8 @@
 
             <TableLayout
                 android:id="@+id/grid"
-                android:layout_width="410dp"
-                android:layout_height="395dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:shrinkColumns="3,4,5"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -122,26 +122,6 @@
 
                     <Button
                         android:id="@+id/button32"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0">
-
-                    <Button
-                        android:id="@+id/button41"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Button" />
-
-                    <Button
-                        android:id="@+id/button42"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

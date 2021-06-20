@@ -193,7 +193,7 @@ public class QuizMaster {
         }
         out.question = tag.question;
 
-        int numFalseAnswers = 8 - numTrueAnswers;
+        int numFalseAnswers = 6 - numTrueAnswers;
         timeout = 0;
         for(int i = 0; i < numFalseAnswers; i++){
             rng = rand.nextInt(QuizMaster.plantInfos.size());

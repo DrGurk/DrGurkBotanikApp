@@ -55,6 +55,7 @@ public class ResultsActivity extends Activity {
     private void mainMenu() {
         Intent challengeIntent = new Intent(this, MainActivity.class);
         startActivity(challengeIntent);
+        finish();
     }
 
     /**

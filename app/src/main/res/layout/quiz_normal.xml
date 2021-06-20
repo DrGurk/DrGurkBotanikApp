@@ -24,7 +24,6 @@
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/art_1"
         android:gravity="center"
         android:keepScreenOn="true"
         android:textColor="#3B713D"
@@ -32,7 +31,7 @@
         android:textStyle="bold" />
 
     <FrameLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
 
