@@ -34,8 +34,6 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent challengeIntent = new Intent(getActivity() , VideoActivity.class);
-                startActivity(challengeIntent);
             }
         });
         view.findViewById(R.id.exitButton).setOnClickListener(new View.OnClickListener() {

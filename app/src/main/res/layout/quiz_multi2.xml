@@ -77,7 +77,8 @@
                         android:layout_height="wrap_content"
                         android:layout_column="0"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/button12"
@@ -85,7 +86,8 @@
                         android:layout_height="wrap_content"
                         android:layout_column="1"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -98,14 +100,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/button22"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -118,14 +122,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
 
                     <Button
                         android:id="@+id/button32"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Button" />
+                        android:text="Button"
+                        android:textStyle="bold" />
                 </TableRow>
 
                 <TableRow
@@ -139,7 +145,8 @@
                         android:layout_height="wrap_content"
                         android:layout_column="0"
                         android:layout_weight="1"
-                        android:text="Bestätigen" />
+                        android:text="Bestätigen"
+                        android:textStyle="bold" />
                 </TableRow>
 
             </TableLayout>
