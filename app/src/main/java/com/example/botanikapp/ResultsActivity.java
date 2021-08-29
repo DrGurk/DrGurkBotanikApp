@@ -39,7 +39,7 @@ public class ResultsActivity extends Activity {
 
         resultTV = findViewById(R.id.resultText);
         int numQuestions = QuizMaster.gameMode == 2 ? QuizMaster.numQuestionsSurvival : QuizMaster.questionTypes.size();
-        resultTV.setText("Punkte: " + QuizMaster.score + "\n Richtige Fragen: " + QuizMaster.correctQuestions + "/" + numQuestions);
+        resultTV.setText("Zeitbonus: " + QuizMaster.score/2 + "\n Richtige Fragen: " + QuizMaster.correctQuestions + "/" + numQuestions +"(" + QuizMaster.correctQuestions*5 + " Punkte)\n Gesamt: " +  QuizMaster.score/2 + QuizMaster.correctQuestions * 5 +" Punkte");
         Button backBtn = findViewById(R.id.result_button);
         backBtn.setText("Hauptmenü");
         backBtn.setOnClickListener(new View.OnClickListener() {

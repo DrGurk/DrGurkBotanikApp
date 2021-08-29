@@ -81,6 +81,7 @@ public class QuizMaster {
         FourChoiceQuestion out = new FourChoiceQuestion();
         String correct;
         String strtag;
+        String sectag;
         int rng = -1;
         rng = rand.nextInt(plantInfos.size());
         PlantInfo pi;
@@ -102,22 +103,34 @@ public class QuizMaster {
             }
         }
         if(tag.holders.size() < 4){
-            System.err.println("WARNING: Less than four plants in primary category!");
-            return out;
-        }
-        for(int i = 1; i < 4; i++){
-            while(true) {
-                rng = rand.nextInt(tag.holders.size());
-                String s = tag.holders.elementAt(rng);
+            Tag secondtag = tags.elementAt(rand.nextInt(tags.size()));
+            for(String s: tag.holders){
                 if(!out.answers.contains(s)){
                     out.answers.add(s);
-                    break;
                 }
-
             }
+            int remainingQuestions = 4 - out.answers.size();
+            for(int i = 0; i < remainingQuestions; i++){
+                out.answers.add(secondtag.holders.elementAt(rand.nextInt(secondtag.holders.size())));
+            }
+
+
         }
-        while(out.answers.size() < 4){
-            out.answers.add("Error");
+        else{
+            for(int i = 1; i < 4; i++){
+                while(true) {
+                    rng = rand.nextInt(tag.holders.size());
+                    String s = tag.holders.elementAt(rng);
+                    if(!out.answers.contains(s)){
+                        out.answers.add(s);
+                        break;
+                    }
+
+                }
+            }
+            while(out.answers.size() < 4){
+                out.answers.add("Error");
+            }
         }
         Collections.shuffle(out.answers);
         out.correct = out.answers.indexOf(correct);

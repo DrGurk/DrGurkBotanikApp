@@ -1,6 +1,7 @@
 package com.example.botanikapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,8 +35,12 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            }
-        });
+                        Intent browserIntent = new Intent(
+                                Intent.ACTION_VIEW,
+                                Uri.parse("https://www.austrianbiologist.at/aba/pflanzen-tirols/"));
+                        startActivity(browserIntent);
+                    }
+            });
         view.findViewById(R.id.exitButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.botanikapp">
 
+    <queries>
+        <package android:name="com.example.botanikapp" />
+    </queries>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

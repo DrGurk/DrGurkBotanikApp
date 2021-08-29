@@ -55,7 +55,6 @@ public class FourChoiceQuizActivity extends Activity {
     TriviaQuestion triviaQuestion;
 
     TextView questionTV;
-    TextView timerTV;
 
     TextView failedTV;
 
@@ -93,6 +92,8 @@ public class FourChoiceQuizActivity extends Activity {
     private void setupProgressBar(int maxTime){
         progressBar = (ProgressBar) findViewById(R.id.time_progress);
         progressBar.setMax(maxTime);
+        progressBar.getProgressDrawable().setColorFilter(
+                Color.GREEN, android.graphics.PorterDuff.Mode.SRC_IN);
     }
 
     private void initFourChoice(){
@@ -409,7 +410,6 @@ public class FourChoiceQuizActivity extends Activity {
 
         progressBar = (ProgressBar) findViewById(R.id.time_progress);
 
-        timerTV = (TextView) findViewById(R.id.timer_text_view);
 
         //Get the default background color
         d = btn1.getBackground();
@@ -456,6 +456,10 @@ public class FourChoiceQuizActivity extends Activity {
 
             public void onTick(long millisUntilFinished) {
                 progressBar.setProgress((int) millisUntilFinished);
+                if((int) millisUntilFinished < progressBar.getMax()/2){
+                    progressBar.getProgressDrawable().setColorFilter(
+                            Color.RED, android.graphics.PorterDuff.Mode.SRC_IN);
+                }
                 timerCount++;
             }
 
@@ -709,9 +713,9 @@ public class FourChoiceQuizActivity extends Activity {
 
     private int getTimer(){
         switch(gameMode){
-            case 0: return 10;
-            case 1: return 5;
-            case 2: return 10;
+            case 0: return 20;
+            case 1: return 6;
+            case 2: return 20;
             default: return 0;
         }
     }
