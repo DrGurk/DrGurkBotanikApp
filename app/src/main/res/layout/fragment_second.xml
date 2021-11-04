@@ -68,7 +68,7 @@
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
-        android:text="Nur 4 Sekunden pro Frage. Keine Multi-Antwort Fragen."
+        android:text="Nur 6 Sekunden pro Frage."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.botanikapp">
+    package="com.gurk.botanikapp">
 
     <queries>
-        <package android:name="com.example.botanikapp" />
+        <package android:name="com.gurk.botanikapp" />
     </queries>
     <application
         android:allowBackup="true"
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.gurk.botanikapp.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
 
@@ -21,21 +21,21 @@
 
         </activity>
         <activity
-            android:name=".FourChoiceQuizActivity"
+            android:name="com.gurk.botanikapp.FourChoiceQuizActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
 
         </activity>
         <activity
-            android:name=".ResultsActivity"
+            android:name="com.gurk.botanikapp.ResultsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
 
         </activity>
         <activity
-            android:name=".BootActivity"
+            android:name="com.gurk.botanikapp.BootActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
