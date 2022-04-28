@@ -11,6 +11,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+/** SecondFragment
+ * second part of the main menu, where you select the game mode
+ * 0 = normal
+ * 1 = blitz (halbe zeit)
+ * 2 = survival (highscore bis 3x falsch)
+ */
 public class SecondFragment extends Fragment {
 
     Button normalMode;

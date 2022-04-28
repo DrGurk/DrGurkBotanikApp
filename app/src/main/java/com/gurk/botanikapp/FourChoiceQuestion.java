@@ -3,12 +3,19 @@ package com.gurk.botanikapp;
 import java.util.Random;
 import java.util.Vector;
 
+/** FourChoiceQuestion
+ *  standard 4 choice image question
+ */
 public class FourChoiceQuestion implements Question {
+
     String imagePath;
     Vector<String> answers = new Vector<String>();
-    int correct;
+    int correct; //id in answers of correct solution
     int numImages;
 
+    /** createQuestion
+     *  unused
+     */
     public void createQuestion(String dir, String[] stuff, Tag tag){
         Random rand = new Random();
         String[] textFilter = {"txt"};

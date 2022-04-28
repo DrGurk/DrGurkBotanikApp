@@ -3,6 +3,10 @@ package com.gurk.botanikapp;
 import java.util.Collections;
 import java.util.Vector;
 
+/** TriviaQuestion
+ * currently the trivia questions are not used
+ *
+ */
 public class TriviaQuestion implements Question {
 
     String question;

@@ -9,6 +9,10 @@ import android.content.Intent;
 
 import android.view.View;
 
+/** shows the result screen
+ *  currently the score is combined with the QuizMaster score field (time bonus) and the amount
+ *  of correct answered questions
+ */
 public class ResultsActivity extends Activity {
 
 

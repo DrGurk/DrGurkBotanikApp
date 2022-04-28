@@ -9,6 +9,12 @@ import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/** BootActivity
+ * sleeps for a bit to show sponsor screen
+ * starts main activity
+ *
+ */
+
 public class BootActivity extends Activity {
 
 

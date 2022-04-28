@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.Vector;
 
-
+/** FileFinder
+ * utility for files
+ */
 public class FileFinder {
     static String[] getList(String dir,final String[] filter) throws IOException {
         String out = "";

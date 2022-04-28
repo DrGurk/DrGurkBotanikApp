@@ -4,6 +4,21 @@ import android.content.Context;
 
 import java.util.Vector;
 
+/**PlantInfo
+ *  stores informations about plants including tags
+ *  tags are strings that represent to which family/group of plants this one belongs to
+ *
+ *  it might be good to split the latin term and german term, currently they are combined
+ *
+ *  boolean init - used to check if initialization is finished
+ *  tags - a vector of tags for this plant
+ *  triviaQuestions - a vector of triviaQuestions associated with this plant
+ *  numImages - the number of images for this plant
+ *
+ *  currently the way i'm having the number determined is a bit sketchy,
+ *  also getPlantInfos doesn't have to be here
+ *
+ */
 public class PlantInfo {
     public boolean init = true;
     public String name;
@@ -38,12 +53,27 @@ public class PlantInfo {
         return strs[0];
     }
 
+    /** addQuestions
+     * @param in string representing questions (found in raw/questions_foo). Usually there is one right and 3 wrong answers. you
+     *           can extend it to have a greater variety of wrong answers it has to be formatted
+     *           like this:
+     *           Question
+     *           Correct Answer
+     *           Wrong Anwser
+     *           Wrong Anwser
+     *           Wrong Anwser
+     *           Optional Wrong Answer
+     *           ...
+     *           Q
+     *           Next Question
+     *           ...
+     */
     public void addQuestions(Vector<String> in){
         for(int i = 0; i < in.size() - 4; i++){
             TriviaQuestionData t = new TriviaQuestionData();
             t.question = in.elementAt(i++);
             t.correctAnswer = in.elementAt(i++);
-            while((i < in.size()) && !in.elementAt(i).equals("Q")){
+            while((i < in.size()) && (in.elementAt(i).compareTo("Q") != 0)){
                 t.wrongAnswers.add(in.elementAt(i++));
             }
             triviaQuestions.add(t);

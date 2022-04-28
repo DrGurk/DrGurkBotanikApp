@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+/** FirstFragment
+ *  main menu, passes off to SecondFragment for game mode selection
+ */
 public class FirstFragment extends Fragment {
 
     @Override

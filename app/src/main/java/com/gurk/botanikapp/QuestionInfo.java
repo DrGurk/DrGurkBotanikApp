@@ -2,9 +2,13 @@ package com.gurk.botanikapp;
 
 import java.util.Vector;
 
+/** QuestionInfo
+ *  old code i was afraid to delete
+ */
 public class QuestionInfo {
     String name;
     String[] tags;
+
 
     QuestionInfo(Vector<String> in){
         for(int i = 0; i < in.size(); i++){

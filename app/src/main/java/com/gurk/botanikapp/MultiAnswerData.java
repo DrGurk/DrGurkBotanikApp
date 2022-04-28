@@ -1,5 +1,8 @@
 package com.gurk.botanikapp;
 
+/** MultiAnswerData
+ *  contains strings and bools for multi answers, which can be shuffled
+ */
 public class MultiAnswerData {
     public String str;
     public boolean bool;

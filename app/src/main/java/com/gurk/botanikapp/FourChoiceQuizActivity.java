@@ -22,6 +22,9 @@ import android.widget.Toast;
 import java.util.Random;
 import java.util.Vector;
 
+/** FourChoiceQuizActivity
+ * misleading name, actually this handles all cases
+ */
 public class FourChoiceQuizActivity extends Activity {
 
     int mode = -1;//0 = 4c, 1 = trivia, 2 = multianswer, 3 = multiimage
@@ -226,6 +229,10 @@ public class FourChoiceQuizActivity extends Activity {
         btn2.setBackground(d);
     }
 
+    /** setMode
+     * calls init functions based on mode
+     * @param in mode
+     */
     private void setMode(int in){
         switch(in){
             case 0:
@@ -262,6 +269,10 @@ public class FourChoiceQuizActivity extends Activity {
             default:
         }
     }
+
+    /** submitArray
+     * submits array stored in arrAnswers to a multiAnswerQuestion
+     */
     private void submitArray(){
         ResultChecker checkResult = multiAnswerQuestion.check(arrAnswers);
         if(checkResult.check()){
@@ -299,6 +310,10 @@ public class FourChoiceQuizActivity extends Activity {
         arrAnswers[i] = !arrAnswers[i];
         updateButtonColors();
     }
+
+    /** updateButtonColors
+     * for multianswer buttons
+     */
     private void updateButtonColors(){
         if(arrAnswers[0]){
             btn1.setBackgroundColor(Color.BLUE);
@@ -314,6 +329,10 @@ public class FourChoiceQuizActivity extends Activity {
         }
 
     }
+
+    /** commonSetup
+     * setup performed for all quiz types
+     */
     private void commonSetup(){
 
         progressBar = (ProgressBar) findViewById(R.id.time_progress);
@@ -388,7 +407,9 @@ public class FourChoiceQuizActivity extends Activity {
         return super.onKeyDown(keyCode, event);
     }
 
-
+    /** createFourChoiceQuestion
+     * creates FourChoiceQuestion from quizmaster and maps it to the UI
+     */
     private void createFourChoiceQuestion(){
 
         imageView = (ImageView) findViewById(R.id.main_image_view);
@@ -467,9 +488,12 @@ public class FourChoiceQuizActivity extends Activity {
 
     }
 
+    /** submitAnswer
+     *  submits answer and colors the buttons accordingly for .5 sec
+     *  you get to try again, but you will get no points for this one
+     * @param answer
+     */
     private void submitAnswer(int answer){
-
-
         if(answer == correctAnswer){
             if(failTries == 0) {
                 QuizMaster.correctQuestions++;
@@ -533,6 +557,14 @@ public class FourChoiceQuizActivity extends Activity {
 
     }
 
+
+    /** nextQuestion
+     * prepares stuff for the next question
+     * - increases counter for survival
+     * - resets the failed bool
+     * - if it was failed previously, shows you the description of that plant
+     * - if it has reached numQuestions it ends, otherwise a new question will be generated
+     */
     private void nextQuestion(){
         if(gameMode == 2){
             QuizMaster.numQuestionsSurvival++;
@@ -616,10 +648,16 @@ public class FourChoiceQuizActivity extends Activity {
         finish();
     }
 
+    /** getTimer
+     * returns timer for quiz type
+     * you can customize the amount if you intend to implement multi image questions, as you will
+     * need more time to think
+     * @return
+     */
     private int getTimer(){
         switch(gameMode){
             case 0: return 20;
-            case 1: return 6;
+            case 1: return 10;
             case 2: return 20;
             default: return 0;
         }

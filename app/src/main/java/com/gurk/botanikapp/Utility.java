@@ -12,12 +12,19 @@ import java.util.Random;
 import java.util.Scanner;
 import java.util.Vector;
 
+/** Utility
+ *  utility functions such as string manipluation to cope with having everything top level
+ */
 public class Utility {
     public static String appfolder;
     static Random rand = new Random();
 
 
-
+    /** splitPar
+     *  returns the german part of a plant/file name
+     * @param in plant/file name
+     * @return name
+     */
     public static String splitPar(String in){
         String[] strs= in.split("\\(");
         String s = strs[0];
@@ -36,7 +43,7 @@ public class Utility {
         }
         return s;
     }
-
+    
     public static int getNumberImagesInDirectory(String dir) {
         File f = new File(dir);
         int count = 0;
@@ -52,6 +59,18 @@ public class Utility {
         return in.replace('/', '_').replace(' ', '+');
     }
 
+    /** getNumImagesForPlant
+     *  returns the number of images for a plant
+     *  workaround for having top level images only
+     *  
+     *  note that it only checks consecutively, if you have images ending in 0, 1 and 3, it will
+     *  only count 0 and 1, and not find 3 because 2 is missing
+     *  
+     * @param in plant name
+     * @param resType has to be "raw"
+     * @param ctx
+     * @return number of images for plant
+     */
     public static int getNumImagesForPlant(final String in, final String resType, final Context ctx){
         int out = 0;
         while(true){
@@ -64,9 +83,7 @@ public class Utility {
         return out;
     }
 
-    public final static int getResourceID
-            (final String resName, final String resType, final Context ctx)
-    {
+    public final static int getResourceID(final String resName, final String resType, final Context ctx) {
         int out = 0;
         try {
             final int resourceID =
@@ -79,6 +96,10 @@ public class Utility {
         }
             return out; // 0 = ERROR
     }
+
+    /** readFile
+     * splits file into string vectors for each line
+     */
     public static Vector<String> readFile(String file, String resType, final Context ctx) {
         Vector<String> out = new Vector<String>();
         try {
@@ -98,6 +119,20 @@ public class Utility {
         }
         return out;
     }
+
+    /** readTags
+     *  reads all tags, holders and the tag question from all tag_ files
+     *  file structure:
+     *            Tag display name (e.g. Wiesenpflanzen)
+     *            Question
+     *            Right answer
+     *            Wrong answer
+     *            Wrong answer
+     *            Wrong answer
+     *            Optional wrong answer
+     *            ...
+     * @return
+     */
     public static Vector<Vector<String>> readTags(final Context ctx){
         Vector<Vector<String>> out = new Vector<Vector<String>>();
         try {
@@ -125,6 +160,9 @@ public class Utility {
         return out;
     }
 
+    /** androidString
+     * converts umlauts and other nasty symbols that can interfere with android
+     */
     public static String androidString(String in){
         return in.replace("ä", "ae").replace("ö","oe").replace("ü", "ue").replace(" ", "_").replace("(", "_").replace(')', '_').replace("-", "_").replace(",", "_").replace('.', '_').replace("ß", "ss").toLowerCase();
     }

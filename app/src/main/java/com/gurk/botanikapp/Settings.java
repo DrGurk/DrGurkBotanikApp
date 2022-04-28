@@ -6,6 +6,13 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+/** Settings file for settings/storage
+ * currently unused
+ *
+ * int unlocks can be used to unlock short videos or new game modes
+ *
+ * i thought a "hardcore mode" with only the latin terms would be fun
+ */
 public class Settings implements java.io.Serializable{
     String name;
     int unlocks;
